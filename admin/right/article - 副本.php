@@ -3,18 +3,9 @@
   <head>
     <title>文章页面</title>
     <meta http-equiv="content-type" content="texl/html;charset=utf-8" >
+    <link rel="stylesheet" href="../css/article.css">
     <style>
 
-      .contain{
-        width:100%;
-        height:650px;
-        background:#EEF2FB;
-      }
-      .title{
-        height:30px;
-        line-height: 30px;
-        background: url('../images/title_bg1.jpg');
-      }
     </style>
   </head>
   <body>

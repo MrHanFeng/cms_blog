@@ -29,8 +29,8 @@
 
 // 定义当前执行文件的文件夹的绝度路径
 	 $dir_name = dirname($_SERVER['SCRIPT_NAME']);//返回当前文件的目录地址
-	define("CUR_PATH","$_SERVER[HTTP_HOST]$dir_name");//拼接上域名组成完整的域名常量
-	
+	define("PATH","http://$_SERVER[HTTP_HOST]$dir_name/");//拼接上域名组成完整的域名常量
+
 // 定义根目录
 	define("SITE_URL","http://localhost/shixun/cms_blog/");
 
@@ -41,6 +41,10 @@
 	define("HOME_PATH", SITE_URL."home/");
 
 
+// 设置时区为中国
+	date_default_timezone_set('PRC');
+
+	
 	// 把数据库快捷操作的函数包含进来
 	include_once("common/mysql.class.php");
 	

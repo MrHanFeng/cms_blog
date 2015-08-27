@@ -1,13 +1,15 @@
+<?php 
+  include_once "function.php";
+  checkLogin();//检测是否登录，未登录，返回到login.php
+  if(isset($_GET['clear_s'])){
+  	// echo "11111111111";
+  	loginout();
+  }
+?>
 <html>
 <head>
-<title><%= title %> - 管理页面</title>
-<script language=JavaScript>
-function logout(){
-	if (confirm("您确定要退出控制面板吗？"))
-	top.location = "out.asp";
-	return false;
-}
-</script>
+<title>管理页面</title>
+
 <script language=JavaScript1.2>
 function showsubmenu(sid) {
 	var whichEl = eval("submenu" + sid);
@@ -41,8 +43,8 @@ function showsubmenu(sid) {
     <td width="61%" height="64"><img src="images/logo.gif" width="262" height="64"></td>
     <td width="39%" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td width="74%" height="38" class="admin_txt">管理员：<b><%=session("admin_name")%></b> 您好,感谢登陆使用！</td>
-        <td width="22%"><a href="#" target="_self" onClick="logout();"><img src="images/out.gif" alt="安全退出" width="46" height="20" border="0"></a></td>
+        <td width="74%" height="38" class="admin_txt">管理员：<b><?php echo @$_SESSION['username']; ?></b> 您好,感谢登陆使用！</td>
+        <td width="22%"><a href= <?php PATH ?> "admin_top.php?clear_s=1" target="_top" onclick="return confirm('确定要退出？');"><img src="images/out.gif" alt="安全退出" width="46" height="20" border="0"></a></td>
         <td width="4%">&nbsp;</td>
       </tr>
       <tr>

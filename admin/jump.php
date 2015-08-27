@@ -2,18 +2,22 @@
 	<head>
 		<title>跳转中</title>
 		<meta http-equiv="content-type" content="text/html;charset=utf-8">
-		<meta http-equiv="refresh" content="<?php echo "{$time};url={$url}" ?>">
+		<meta http-equiv="refresh_error" content="<?php echo "{$time};url={$url}" ?>">
 		<script>
-
-
-		var timeobj= document.getElementById("time");
-		setInterval("settime()",1000);//方法可按照指定的周期（以毫秒计）来调用函数或计算表达式。
-		var t=<?php echo $time+1; ?>;
-
-		function settime(){
-			timeobj.innerHTML='111';
-		}
-
+			//设定倒数秒数  
+			var t = <?php  echo $time; ?> ;
+			//显示倒数秒数  
+			function showTime(){  
+			    t -= 1;  
+			    if(t==0){  
+			    	clearInterval(time);
+			        location.href=<?php  echo "'".$url."'" ?>;  
+			        return;
+			    }  
+			    document.getElementById("time").innerHTML= t;
+			    //每秒执行一次,showTime()  
+			}  
+			time=setInterval("showTime()",1000);  
 		</script>
 	</head>
 	<body>
@@ -32,7 +36,7 @@
 		</h1>
 		<?php  } ?>
 
-		<h2 ><div id="time">后即将跳转</div></h2>
+		<h2 ><span id="time"> <?php  echo $time; ?></span>后即将跳转</h2>
 		<h2>
 			如果页面没有跳转，<a href="<?php echo $url;?>">请点击此处跳转</a>
 		</h2>
