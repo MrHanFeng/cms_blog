@@ -6,6 +6,7 @@
 		<script>
 			//设定倒数秒数  
 			var t = <?php  echo $time; ?> ;
+			// alert(<?php  echo "'".$url."'" ?>);
 			//显示倒数秒数  
 			function showTime(){  
 			    t -= 1;  

@@ -4,11 +4,25 @@
   checkLogin();//检测是否登录，未登录，返回到login.php
 
   // 检测在那个页面，回收站和文章列表
+  $order = " article_create_time DESC ";
+
+  // 判断是回收站页面还是泪飙页面
   if(isset($_GET['sign'])){
-    $list = search_art_cate_user("已删除");
+    $status = "已删除";
   }else{
-    $list = search_art_cate_user("全部");
+    $status = "全部";
   }
+
+  if(isset($_GET['order_a'])){
+    $order = "  article_user_id DESC ";
+  }elseif(isset($_GET['order_c'])){
+    $order = " article_category_id DESC ";
+  }elseif(isset($_GET['order_s'])){
+    $order = " article_status DESC ";
+  }
+
+  $list = search_art_cate_user($status,$order);
+
 
   // 检测是否有恢复操作
   if(isset($_GET['recover']) && $_GET['recover']="true"){
@@ -59,9 +73,9 @@
           <table border=1 cellspacing=0 cellpadding=0 width="100%" align=center>
             <tr class="f_tr">
               <td width="35%">文章标题</td>
-              <td width="10%">作者</td>
-              <td width="10%">所属分类</td>
-              <td width="10%">发布状态</td>
+              <td width="10%"><a href="<?php echo PATH."article.php?order_a=true" ?>">作者</a></td>
+              <td width="10%"><a href="<?php echo PATH."article.php?order_c=true" ?>">所属分类</a></td>
+              <td width="10%"><a href="<?php echo PATH."article.php?order_s=true" ?>">发布状态</a></td>
               <td width="10%">发布时间</td>
               <td width="10%">修改时间</td>
               <td width="10%">操作</td>

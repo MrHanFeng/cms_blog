@@ -15,10 +15,10 @@
       $re = update_article($art_info['article_id'],$_POST);
       if($re){
           // echo "success";
-          jump(2,PATH."article.php","插入成功","success");
+          jump(20,PATH."article.php","修改成功","success");
       }else{
         // echo "error";
-          jump(2,PATH."article.php","插入失败","error");
+          jump(2,PATH."article.php","修改失败","error");
       }
   }
 

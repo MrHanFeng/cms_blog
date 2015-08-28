@@ -10,7 +10,9 @@
   </head>
   <body>
     <div class="contain">
-      <div class="title">当前位置：</div>
+      <div class="title">当前位置：
+         <div style="float:right;"><a href="article_add.php">添加文章</a></div>
+      </div>
           
     </div>
   </body>

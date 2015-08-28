@@ -40,6 +40,9 @@
 // 定义到/home的绝对路径
 	define("HOME_PATH", SITE_URL."home/");
 
+// 定义上传路径
+	define('__PUBLIC__',SITE_URL."public/");
+
 
 // 设置时区为中国
 	date_default_timezone_set('PRC');

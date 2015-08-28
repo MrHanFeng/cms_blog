@@ -73,6 +73,9 @@
 	}
 
 
+/*------------------------------------------------------------------------------*/
+/*-----------------------------以下为【登录登出】操作---------------------------*/
+/*------------------------------------------------------------------------------*/
 	/**
 	 * 用户登录函数
 	 * 判断验证码，用户名，用户密码
@@ -185,39 +188,6 @@
 /*------------------------------------------------------------------------------*/
 
 	/**
-	*	查询分类表(cms_category)的信息
-	*	@return
-	*	分类表的ID,NAME, 二维数组
-	*/
-	function get_category_mes(){
-		$cate = M('cms_category');
-		return $re = $cate->select();
-		// show($re);
-	}
-	/*返回一维数组，特定的分类信息*/
-	function get_category($id){
-		$cate = M('cms_category');
-		$where=" cat_id = $id";
-		return $re = $cate->where($where)->find();
-		// show($re);
-	}
-
-
-	/**
-	*	查询文章表(article)中指定文章的信息
-	*	@param $id :文章的ID
-	*	@return 一维数组，文章的所有信息
-	*/
-	function get_article($id){
-		$art = M("cms_article");
-		$where=" article_id=$id ";
-		return $re = $art->where($where)->find();
-		// echo $art->getLastSql();
-		// show($re);
-	}
-
-
-	/**
 	* 	查询分类(category)与文章(article)与用户(user)对应关系
 	*   @param 为查询文章的状态，
 	*    默认为正常除了删除状态
@@ -225,7 +195,7 @@
 	*   @return 二维索引数组，
 	*	 下标为分类的ID，值为所搜索的对应字段，
 	*/
-	function search_art_cate_user($status="全部"){
+	function search_art_cate_user($status="非删除",$order=" article_create_time DESC"){
 		  $article = M('cms_article');
 		  $join=" cms_category on cms_article.article_category_id = cms_category.cat_id LEFT JOIN cms_user ON cms_article.article_user_id = cms_user.user_id";
 		  // $field = "article_title,article_status,cms_category.cat_name,cms_category.cat_id";
@@ -253,13 +223,90 @@
 		  		$where = " article_status != '已删除'";
 		  		break;
 		  }
-		  $cate = $article->join($join)->where($where)->select();
+		  $cate = $article->join($join)->where($where)->order($order)->select();
 		  // echo $article->getLastSql();
 		  // show($cate);
 		  return $cate;
 	}
+	/**
+	*	查询文章表(article)中指定文章的信息
+	*	@param $id :文章的ID
+	*	@return 一维数组，文章的所有信息
+	*/
+	function get_article($id){
+		$art = M("cms_article");
+		$where=" article_id=$id ";
+		return $re = $art->where($where)->find();
+		// echo $art->getLastSql();
+		// show($re);
+	}
 
 
+
+	/**
+	*	查询分类表(cms_category)的信息
+	*	@return
+	*	分类表的ID,NAME, 二维数组
+	*/
+	function get_category_mes(){
+		$cate = M('cms_category');
+		return $re = $cate->select();
+		// show($re);
+	}
+	/* 查询分类表,返回一维数组，特定的分类信息*/
+	function get_category($id){
+		$cate = M('cms_category');
+		$where=" cat_id = $id";
+		return $re = $cate->where($where)->find();
+		// show($re);
+	}
+
+
+	/**
+	*	查询链接表(cms_category)的信息
+	*	@return
+	*	成功返回 链接表的信息, 二维数组
+	*	失败返回false
+	*/
+	function get_link_mes(){
+		$link = M('cms_link');
+		$order=(" link_update_time DESC ");
+		$re =  $re = $link->order($order)->select();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+	/* 查询链接表,返回一维数组，特定的链接信息*/
+	function get_link($id){
+		$link = M('cms_link');
+		$where=" link_id = $id";
+		$re = $re = $link->where($where)->find();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+
+	/**
+	*	查询评论表(cms_comment)的信息
+	*	@param $article_id 指定文章的ID
+	*	@return 
+	*	成功返回 指定文章的评论表的信息, 二维数组
+	*	失败返回false
+	*/
+	function get_comment($id){
+		$cm = M('cms_comment');
+		$where=" cm_arid = $id";
+		$re = $re = $cm->where($where)->select();
+		// show($re);
+		// echo $cm->getLastSql();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
 
 /*------------------------------------------------------------------------------*/
 /*-------------------------------以下为【插入】操作-----------------------------*/
@@ -277,9 +324,10 @@
 		$art = M('cms_article');
 		// show($mess);
 		$re =  $art->data($mess)->insert();
-		// echo $art->getLastSql();
-		// show($re);
-		return $re;
+		if($re){
+			return $re;
+		}
+		return false;
 	}
 
 
@@ -298,6 +346,22 @@
 	}
 
 
+	/**
+	*	插入友情链接信息
+	*	@param $data(),数组形式传入要插入的值
+	*	@return 成功返回影响行数 ；失败返回false
+	*/
+	function insert_link($data){
+		$data['link_update_time'] = time();
+		$link = M('cms_link');
+		$re = $link->data($data)->insert();
+		// echo $link->getLastSql();exit;
+		// show($re);
+		if($re){
+			return $re;
+		}
+		return false;
+	}
 
 /*------------------------------------------------------------------------------*/
 /*-------------------------------以下为【更新】操作-----------------------------*/
@@ -325,11 +389,16 @@
 	*	修改分类信息
 	*	@param $id 哪条分类 $data修改的值[数组形式]
 	*	@return 成功返回影响行数 ；失败返回false
+	*	注意$mess，因为前台POST提交了一个信息，为字符串格式，小心数据多了变数组
 	*/
-	function update_cate($id,$mess){
+	function update_cate($id,$data){
 		$cate = M('cms_category');
-		if(!is_array($mess)){
+		if(!is_array($data)){
+			$mess= $data;
+			// $data=settype($data,"array");  
+			$data= array();  
 			$data['cat_name']=$mess;
+			// show($data);exit;
 		}
 		$where = " cat_id = $id";
 		$re = $cate->where($where)->data($data)->update();
@@ -340,6 +409,45 @@
 		return false;
 	}
 
+
+	/**
+	*	修改分类信息
+	*	@param $id 哪条分类 $data修改的值[数组形式]
+	*	@return 成功返回影响行数 ；失败返回false
+	*/
+	function update_link($id,$data){
+		$link = M('cms_link');
+		$where = " link_id = $id ";
+
+		if(!is_array($data) && $data="up" ){//如果是置顶操作
+			$data=array();
+			$data['link_update_time']=time();
+		}
+		$re = $link->where($where)->data($data)->update();
+		// echo $link->getLastSql();
+
+		if($re){
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	*	修改分类信息
+	*	@param $id 哪条分类 $data修改的值[数组形式]
+	*	@return 成功返回影响行数 ；失败返回false
+	*/
+	function update_comm($id,$data){
+		$link = M('cms_comment');
+		$where = " cm_id = $id ";
+		$re = $link->where($where)->data($data)->update();
+		// echo $link->getLastSql();exit;
+		if($re){
+			return true;
+		}
+		return false;
+	}
 
 /*------------------------------------------------------------------------------*/
 /*-------------------------------以下为【删除】操作-----------------------------*/
@@ -362,6 +470,84 @@
 
 	}
 	
+	/**
+	*	删除友情链接信息函数
+	*	@param $id 所要删除链接的ID
+	*	@return 成功返回影响行数；失败返回false
+	*/
+	function del_link($id){
+		$link = M('cms_link');
+		$where =" link_id = $id";
+		$re = $link->where($where)->delete();
+		if($re){
+			return $re;
+		}else{
+			return false;
+		}
+	}
 
+
+
+
+
+/*------------------------------------------------------------------------------*/
+/*---------------------------以下为【文件上传】操作-----------------------------*/
+/*------------------------------------------------------------------------------*/
+
+	/**
+	*	获取文件后缀名字
+	*	@param $filename:文件的名称【带后缀】
+	*	@return 返回后缀名称
+	*/
+	function fileext($filename){
+		return substr(strrchr($filename, '.'),1);
+	}
+
+
+	/**
+	*	生成随机名称.
+	*	@param 获得随机名字的长度
+	*	@return 返回随机生成的名称
+	*/
+	function random_name($length=15){
+        $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $chars_len = strlen($chars);
+        $hash= "";
+		for($i=0;$i<$length;$i++){
+			$hash .= $chars[mt_rand(0,$chars_len-1)];
+		}
+		return $hash.date("_H_i_s",time());
+	}
+
+
+	/**
+	*	生成并返回上传路径
+	*
+	*/
+	function upload_path(){
+		$path = __PUBLIC__."/upload/".date("H-m-d",time());
+		mkdir($path);
+	}
+
+	/**
+	*	上传文件移动函数
+	*	@param $filename 文件名称
+	*	@return
+	*	成功返回true
+	*	失败返回false
+	*/
+	function move_upload_file($filename){
+		if(is_uploaded_file($filename)){
+			if( move_uploaded_file(random_name(), upload_path()) ){
+				return true;
+			}
+			return false;
+		}
+	}
+
+
+/*------------------------------------------------------------------------------*/
+/*------------------------------------END---------------------------------------*/
+/*------------------------------------------------------------------------------*/
 
  ?>
