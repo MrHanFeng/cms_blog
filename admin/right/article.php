@@ -3,16 +3,16 @@
   include_once "../function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
 
-  // 检测在那个页面，回收站和文章列表
-  $order = " article_create_time DESC ";
-
-  // 判断是回收站页面还是泪飙页面
+  // 检测在哪个页面，回收站和文章列表
   if(isset($_GET['sign'])){
     $status = "已删除";
   }else{
     $status = "全部";
   }
 
+  // 设置默认排序规则
+  $order = " article_create_time DESC ";
+  // 根据用户需求设置排序规则
   if(isset($_GET['order_a'])){
     $order = "  article_user_id DESC ";
   }elseif(isset($_GET['order_c'])){
@@ -21,8 +21,8 @@
     $order = " article_status DESC ";
   }
 
+// 查询文章信息
   $list = search_art_cate_user($status,$order);
-
 
   // 检测是否有恢复操作
   if(isset($_GET['recover']) && $_GET['recover']="true"){

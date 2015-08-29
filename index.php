@@ -44,11 +44,14 @@
 	define('__PUBLIC__',SITE_URL."public/");
 
 
+// 物理地址，到当前项目的根目录 cms_blog下【不管cms_blog的项目文件有多深】
+	define('__ROOT__', strstr($_SERVER['SCRIPT_FILENAME'],"cms_blog",true)."cms_blog/") ;
+
 // 设置时区为中国
 	date_default_timezone_set('PRC');
 
 	
 	// 把数据库快捷操作的函数包含进来
-	include_once("common/mysql.class.php");
+	include_once("common/Mysql.class.php");
 	
  ?>

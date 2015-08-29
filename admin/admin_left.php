@@ -49,8 +49,8 @@
           </tr>
         </table>
         <ul class="MM">
-		  <li><a href=" " target="main">评论列表</a></li>
-		  <li><a href=" " target="main">回收站</a></li>
+      <li><a href="right/comment.php" target="main">评论管理</a></li>
+      <li><a href=" " target="main">回收站</a></li>
           
         </ul>
       </div>
@@ -62,12 +62,10 @@
           </tr>
         </table>
         <ul class="MM">
-          <li><a href=" " target="main">会员管理</a></li>
+          <li><a href="right/user.php" target="main">会员管理</a></li>
+          <li><a href="right/user_editor.php" target="main">添加会员</a></li>
           <li><a href=" " target="main">留言管理</a></li>
-          <li><a href=" " target="main">回复管理</a></li>
-          <li><a href=" " target="main">订单管理</a></li>
           <li><a href=" " target="main">举报管理</a></li>
-          <li><a href="right/comment.php" target="main">评论管理</a></li>
         </ul>
       </div>
 
@@ -79,12 +77,12 @@
 	          </tr>
 	        </table>
 	        <ul class="MM">
-	          <li><a href=" " target="main">基本设置</a></li>
-	          <li><a href=" " target="main">邮件设置</a></li>
-	          <li><a href=" " target="main">广告设置</a></li>
-	          <li><a href=" " target="main">联系方式</a></li>
 	          <li><a href=" right/link.php" target="main">管理链接</a></li>
             <li><a href="right/link_add.php" target="main">增加链接</a></li>
+            <li><a href=" " target="main">基本设置</a></li>
+            <li><a href=" " target="main">邮件设置</a></li>
+            <li><a href=" " target="main">广告设置</a></li>
+            <li><a href=" " target="main">联系方式</a></li>
 	        </ul>
 	      </div>
     </div>

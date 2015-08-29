@@ -1,7 +1,7 @@
 <?php 
 	session_start();
 	define('PATH_ADMIN',dirname(__DIR__));
-	include_once(PATH_ADMIN.'/index.php');
+	include_once(PATH_ADMIN.'/index.php');//引入头文件
 
 	// 实例化对象快捷函数
 	function M($table){
@@ -22,8 +22,8 @@
 	*	目的：为了后期好维护,用到$_SESSION['username'],统一在这里改
 	*/
 	function set_user_session($id,$name){
-		$_SESSION['user_id'] = $id;
-		$_SESSION['username'] = $name;
+		$_SESSION['mg_id'] = $id;
+		$_SESSION['mg_name'] = $name;
 	}
 
 
@@ -37,8 +37,8 @@
 	*	目的：为了后期好维护,用到$_SESSION['username'],统一在这里改
 	*/
 	function get_user_session(){
-		if(isset($_SESSION['username'] )){
-			return $_SESSION["username"];
+		if(isset($_SESSION['mg_name'] )){
+			return $_SESSION["mg_name"];
 		}
 			return false;
 	}
@@ -73,6 +73,44 @@
 	}
 
 
+	/**
+	*	分页显示
+	*	@param 
+	*	$table_name 查询的表格名称
+	*	$per 每页要显示的条数
+	*	$sql 查询的SQL语句，纯语句
+	*	@return 返回三维数组
+	*	$arr=("info"=>"查询的全部数据","pagelist"=>"页码的HTML代码")，
+	*/
+	function page($table_name,$per,$sql){
+		$table = M("$table_name");
+		/*1.赋值配置*/
+		$total = $table->count();//计算总条数 【TP和自己写的SQL模版，count不知是否效果一样？】
+
+
+		/*2.实例化分页类*/
+		// $page = new \Component\Page($total,$per);//TP框架下用法：实例化分页类，分页类中相应要有命名空间
+		include_once(__ROOT__.'common/Page.class.php');//把分页类加载进来，与上边二选一
+
+		$page = new Page($total,$per);
+
+		///* 3.写SQL语句*/
+		$sql .= " ".$page->limit;//设置了每页限制
+
+		 /*4.获得页码列表*/
+
+		 // $info = $goods ->query($sql);//TP框架下的查询用法
+		$info = $table ->select($sql);//自定义的函数select用法，与上边二选一
+
+		$pagelist = $page->fpage();//获得分页信息
+
+		/*5.返回信息*/
+		$arr["info"]=$info;
+		$arr["pagelist"]=$pagelist;
+		return $arr;
+	}
+
+
 /*------------------------------------------------------------------------------*/
 /*-----------------------------以下为【登录登出】操作---------------------------*/
 /*------------------------------------------------------------------------------*/
@@ -98,10 +136,10 @@
 			}
 			if(!$user_info){
 				jump('2',ADMIN_PATH."log/login.php",'用户名不存在','error');
-			}elseif(md5($_POST['password']) == $user_info['mg_pwd']){
+			}elseif(md6($_POST['password']) == $user_info['mg_pwd']){
 				if(isset($_POST['remember'])){//记住密码功能
 					setcookie('username',$_POST['username'],time()+3600*24*7);
-					$password = md5($user_info['mg_name'].$user_info['mg_pwd']);
+					$password = md6($user_info['mg_name'].$user_info['mg_pwd']);
 					setcookie('password',$password,time()+3600*24*7);
 				}
 				set_user_session($user_info['mg_id'],$user_info['mg_name']);//通过了方法，减少了维护成本
@@ -159,9 +197,8 @@
 			setcookie('username','',time()-1);
 			setcookie('password','',time()-1);
 			return false;
-		}elseif($_COOKIE['password'] == md5($user_info['mg_name'].$user_info['mg_pwd'])){
-			$_SESSION['user_id'] = $user_info['mg_id'];
-			$_SESSION['username'] = $user_info['mg_name'];
+		}elseif($_COOKIE['password'] == md6($user_info['mg_name'].$user_info['mg_pwd'])){
+			set_user_session($user_info['mg_id'],$user_info['mg_name']);
 			return true;
 		}else{//
 			return false;
@@ -180,7 +217,33 @@
 	}
 
 
+	/**
+	*	检测注册信息
+	*	@param $data 一维数组
+	*	@return 二维数组
+	*		成功$result['bool']=true
+	*		失败$result['bool']=false + $result['info']错误信息
+	*/
+	function check_reg($data){
+		$user = M('cms_user');
+		$where = array("user_email"=>$data['user_email']);
+		$re = $user->where($where)->find();
+		$result['bool']= false;
+		if($re){
+			$result['info']="邮箱已经注册";
+			return $result;
+		}
 
+		if(strlen($_POST['password']) < 6 || empty($_POST['password']) || empty($_POST['c_password'])){
+			$result['info']="请输入大于6位的密码";
+		}elseif($_POST['password'] !== $_POST['c_password']){
+			$result['info']="密码输入不一致";
+		}else{
+			$result['info']="注册成功";
+			$result['bool']= true;
+		}
+		return $result;
+	}
 
 
 /*------------------------------------------------------------------------------*/
@@ -212,10 +275,6 @@
 	  			$where = array("article_status"=>"审核未通过");
 	  			break;	
 
-		  	case '审核已通过':
-		  		$where = array("article_status"=>"审核已通过");
-		  		break;	
-
 		  	case '已删除':
 		  		$where = array("article_status"=>"已删除");
 		  		break;
@@ -242,7 +301,6 @@
 	}
 
 
-
 	/**
 	*	查询分类表(cms_category)的信息
 	*	@return
@@ -253,6 +311,7 @@
 		return $re = $cate->select();
 		// show($re);
 	}
+
 	/* 查询分类表,返回一维数组，特定的分类信息*/
 	function get_category($id){
 		$cate = M('cms_category');
@@ -277,6 +336,7 @@
 		}
 		return false;
 	}
+
 	/* 查询链接表,返回一维数组，特定的链接信息*/
 	function get_link($id){
 		$link = M('cms_link');
@@ -302,6 +362,58 @@
 		$re = $re = $cm->where($where)->select();
 		// show($re);
 		// echo $cm->getLastSql();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+	/**
+	* 获得所有文章的评论条数
+	* @return 一维数组，key为文章ID，value文章评论条数
+	*/
+	function get_com_num(){
+		$cm = M('cms_comment');
+		$sql = "select count(*) as com_num,cm_arid from cms_comment GROUP BY cm_arid ";
+		$re = $cm->exec($sql);
+		$result = "";
+		while($a = $re->fetch_assoc()){
+			$result[$a['cm_arid']]=$a['com_num'];
+		}
+		return $result;
+	}
+
+
+	/**
+	* 获得所有会员用户的信息
+	* @return 二维数组包含所有信息
+	*/
+	function get_user_mes(){
+		$user = M('cms_user');
+		return $user->select();
+	}
+
+	/* 查询特定会员,返回一维数组 所有信息*/
+	function get_user($id){
+		$user = M('cms_user');
+		$where=" user_id = $id";
+		$re = $re = $user->where($where)->find();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+
+	/**
+	*	获取管理员的信息
+	*	@param  $id 管理员的ID号
+	*	@return 一位数组 该管理员的信息 失败返回false
+	*/
+	function get_manager($id){
+		$where= (" mg_id = $id ");
+		$mg = M("cms_manager");
+		$re = $mg->where($where)->find();
 		if($re){
 			return $re;
 		}
@@ -363,6 +475,26 @@
 		return false;
 	}
 
+	/**
+	*	插入会员用户信息
+	*	@param $data(),数组形式传入要插入的用户值
+	*	@return 成功返回影响行数 ；失败返回false
+	*/
+	function insert_user($data){
+		$data['user_time'] = time();
+		$data['user_last'] = time();
+		$data['password'] = md6($data['password']);
+		$user = M('cms_user');
+		$re = $user->data($data)->insert();
+		// echo $link->getLastSql();exit;
+		// show($re);
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+
 /*------------------------------------------------------------------------------*/
 /*-------------------------------以下为【更新】操作-----------------------------*/
 /*------------------------------------------------------------------------------*/
@@ -402,7 +534,7 @@
 		}
 		$where = " cat_id = $id";
 		$re = $cate->where($where)->data($data)->update();
-		// echo $cate->getLastSql();
+		// echo $cate->getLastSql();exit;
 		if($re){
 			return $re;
 		}
@@ -449,6 +581,42 @@
 		return false;
 	}
 
+
+	/**
+	*	修改会员信息
+	*	@param $id 哪位会员 $data修改的值[数组形式]
+	*	@return 成功返回影响行数 ；失败返回false
+	*/
+	function update_user($id,$data){
+		$user = M('cms_user');
+		$data['user_last'] = time();
+		$data['password'] = md6($data['password'] );
+		$where = " user_id = $id ";
+		$re = $user->where($where)->data($data)->update();
+		// echo $link->getLastSql();exit;
+		if($re){
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	*	修改管理员密码
+	*	@param $id 哪位管理员 $data修改的值[数组形式]
+	*	@return 成功返回影响行数 ；失败返回false
+	*/
+	function update_mg_pwd($id,$data){
+		$user = M('cms_manager');
+		$mess['mg_pwd']=md6($data);
+		$where = " mg_id = $id ";
+		$re = $user->where($where)->data($mess)->update();
+		// echo $link->getLastSql();exit;
+		if($re){
+			return true;
+		}
+		return false;
+	}
+
 /*------------------------------------------------------------------------------*/
 /*-------------------------------以下为【删除】操作-----------------------------*/
 /*------------------------------------------------------------------------------*/
@@ -457,17 +625,34 @@
 	*	删除分类信息函数
 	*	@param $id 所要删除分类的ID
 	*	@return 成功返回影响行数；失败返回false
+	*	不足，把删除的分类，能改到用户指定分分类，需要前台配合？？？
 	*/
 	function del_cate($id){
 		$cat = M('cms_category');
-		$where =" cat_id = $id";
-		$re = $cat->where($where)->delete();
-		if($re){
-			return $re;
-		}else{
-			return false;
+		$art = M('cms_article');
+		$cat ->startTrans();//开启事务
+
+		$cat_where =" cat_id = $id";
+		$cat_re = $cat->where($cat_where)->delete();
+		// show($cat_re);
+
+		$art_where =" article_category_id = $id";//找到此分类的所有文章
+		$art_data['article_category_id'] = "0";//把删除的这类的文章，分到默认0类
+		$art_re = $art->where($art_where)->data($art_data)->update();
+		// echo $art->getLastSql();
+		// show($art_re);
+
+		if($cat_re && $art_re !== false){
+			// echo "commit<br>";
+			$cat->commit();//成功提交
+			return true;
 		}
 
+		// echo "rollback<br>";
+		$cat ->rollback();//失败回滚
+		return false;
+
+		$cat ->endTrans();//关闭事务
 	}
 	
 	/**
@@ -486,7 +671,21 @@
 		}
 	}
 
-
+	/**
+	*	删除会员用户信息函数
+	*	@param $id 所要删除会员的ID
+	*	@return 成功返回影响行数；失败返回false
+	*/
+	function del_user($id){
+		$user = M('cms_user');
+		$where =" user_id = $id";
+		$re = $user->where($where)->delete();
+		if($re){
+			return $re;
+		}else{
+			return false;
+		}
+	}
 
 
 

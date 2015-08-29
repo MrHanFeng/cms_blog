@@ -519,6 +519,7 @@
          * @return bool
          */
         function startTrans(){
+        	self::$mysqli->autocommit(TRUE);
 			$sql="start transaction";
 			return $this->exec($sql);
 		}
@@ -540,6 +541,12 @@
 			return self::$mysqli->rollback();
 		}
 
+
+		function endTrans(){
+        	self::$mysqli->autocommit(false);
+			$sql="end transaction";
+			return $this->exec($sql);
+		}
 // --------------------------------------------------------------------------------
 // 上面为SQL的事务操作
 // --------------------------------------------------------------------------------

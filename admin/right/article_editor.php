@@ -79,9 +79,8 @@
               <td>状态</td>
               <td>
                 <select name="article_status" >
-                  <option value="未审核" <?php if($art_info['article_status'] == "未审核"){echo 'selected="selected"';}?>>未审核</option>
                   <option value="已发布" <?php if($art_info['article_status'] == "已发布"){echo 'selected="selected"';}?> >已发布</option>
-                  <option value="审核已通过" <?php if($art_info['article_status'] == "审核已通过"){echo 'selected="selected"';}?>>审核已通过</option>
+                  <option value="未审核" <?php if($art_info['article_status'] == "未审核"){echo 'selected="selected"';}?>>未审核</option>
                   <option value="审核未通过" <?php if($art_info['article_status'] == "审核未通过"){echo 'selected="selected"';}?>>审核未通过</option>
                 </select>
                 <input type="hidden" name="article_update_time" value="<?php  echo time();?>">
