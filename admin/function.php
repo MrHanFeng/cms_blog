@@ -1,7 +1,7 @@
 <?php 
 	session_start();
 	define('PATH_ADMIN',dirname(__DIR__));
-	include_once(PATH_ADMIN.'/index.php');//引入头文件
+	include_once(PATH_ADMIN.'/config.php');//引入配置文件
 
 	// 实例化对象快捷函数
 	function M($table){

@@ -4,31 +4,31 @@
 
 	Class Mysqlclass{
 
-		static $mysqli;				//å­˜å‚¨mysqliå¯¹è±¡
-		private $_table;			//å½“å‰çš„è¡¨å
-		private $field="*";			//æŸ¥è¯¢å­—æ®µ
-		private $where;				//whereæ¡ä»¶
-		private $sql;				//æ‰§è¡Œçš„è¯­å¥
-		private $error_info;		//ç”¨äºŽå­˜å‚¨é”™è¯¯ä¿¡æ¯
-		private $group;				//åˆ†ç»„æ¡ä»¶
-		private $order;				//æŽ’åºæ¡ä»¶
-		private $limit;				//limitæ¡ä»¶
-		private $join;				//joinæ¡ä»¶
-		private $data;				//insertæˆ–updateæ˜¯æ•°æ®å†…å®¹
-		private $error=array(		//é”™è¯¯åº“,æŠŠæ‰€æœ‰çš„é”™è¯¯ç±»åž‹ï¼Œæ”¾åœ¨è¿™é‡Œ
-				'E01'=>'æ²¡æœ‰æ•°æ®é¡¹',
-				'E02'=>'æ²¡æœ‰è®¾ç½®whereæ¡ä»¶',
+		static $mysqli;				//´æ´¢mysqli¶ÔÏó
+		private $_table;			//µ±Ç°µÄ±íÃû
+		private $field="*";			//²éÑ¯×Ö¶Î
+		private $where;				//whereÌõ¼þ
+		private $sql;				//Ö´ÐÐµÄÓï¾ä
+		private $error_info;		//ÓÃÓÚ´æ´¢´íÎóÐÅÏ¢
+		private $group;				//·Ö×éÌõ¼þ
+		private $order;				//ÅÅÐòÌõ¼þ
+		private $limit;				//limitÌõ¼þ
+		private $join;				//joinÌõ¼þ
+		private $data;				//insert»òupdateÊÇÊý¾ÝÄÚÈÝ
+		private $error=array(		//´íÎó¿â,°ÑËùÓÐµÄ´íÎóÀàÐÍ£¬·ÅÔÚÕâÀï
+				'E01'=>'Ã»ÓÐÊý¾ÝÏî',
+				'E02'=>'Ã»ÓÐÉèÖÃwhereÌõ¼þ',
 			);
 
 
 		/**
   		 * @param $table
-		 * $table è¡¨å
+		 * $table ±íÃû
 		 *
 		 */
 		function __construct($table){
-			// é¦–æ¬¡å®žåŠ›åŒ–mysqliå¯¹è±¡
-			if(!self::$mysqli){//å¦‚æžœæ²¡æœ‰å®žåŠ›åŒ–è¿‡è¿™ä¸ªå¯¹è±¡
+			// Ê×´ÎÊµÁ¦»¯mysqli¶ÔÏó
+			if(!self::$mysqli){//Èç¹ûÃ»ÓÐÊµÁ¦»¯¹ýÕâ¸ö¶ÔÏó
 				self::$mysqli = @new mysqli(DB_HOST,DB_USER,DB_PASS,DB_NAME);
 				if(mysqli_connect_errno()){
 					throw new Exception(mysqli_connect_errno());
@@ -39,10 +39,10 @@
 		}
 
 		/**
-		 * è®¾ç½®æŸ¥è¯¢è¦è¿”å›žçš„å­—æ®µå€¼
+		 * ÉèÖÃ²éÑ¯Òª·µ»ØµÄ×Ö¶ÎÖµ
 		 * @param $field
-		 * $field å­—æ®µ
-		 * å¯ä»¥æ˜¯æ•°ç»„ï¼Œä¹Ÿå¯ä»¥æ˜¯å­—ç¬¦ä¸²
+		 * $field ×Ö¶Î
+		 * ¿ÉÒÔÊÇÊý×é£¬Ò²¿ÉÒÔÊÇ×Ö·û´®
 		 * @return $this
 		 */
         function field($field){
@@ -56,14 +56,14 @@
 		}
 
 		/**
-		 * è®¾ç½®è¡¨è¿žæŽ¥çš„æ¡ä»¶
+		 * ÉèÖÃ±íÁ¬½ÓµÄÌõ¼þ
 		 * @param $join
-		 * $join è¿žæŽ¥æ¡ä»¶
-		 * åªèƒ½æ˜¯å­—ç¬¦ä¸²
-		 * ç¤ºä¾‹ï¼št2 on t2.id=id
-		 * @param string $type ï¼ˆå¯é€‰ï¼‰
-		 * $type è¿žæŽ¥ç±»åž‹
-		 * å‚è€ƒå€¼ï¼šleft inner right
+		 * $join Á¬½ÓÌõ¼þ
+		 * Ö»ÄÜÊÇ×Ö·û´®
+		 * Ê¾Àý£ºt2 on t2.id=id
+		 * @param string $type £¨¿ÉÑ¡£©
+		 * $type Á¬½ÓÀàÐÍ
+		 * ²Î¿¼Öµ£ºleft inner right
 		 * @return $this
 		 */
 		function join($join,$type="left"){
@@ -72,7 +72,7 @@
 		}
 
 		/**
-		 *	è®¾ç½®æŸ¥è¯¢è¯­å¥ä¸­çš„whereæ¡ä»¶
+		 *	ÉèÖÃ²éÑ¯Óï¾äÖÐµÄwhereÌõ¼þ
 		 *	@param $where
 		 *  	
 		 *	@return $this	
@@ -84,7 +84,7 @@
 			}elseif(is_array($where)){
 				$sql = " where ";
 				foreach ($where as $k => $v) {
-					if(is_array($v)){//å¦‚æžœæ•°ç»„çš„ç¬¬ä¸€ä¸ªå…ƒç´ è¿˜æ˜¯æ•°ç»„ï¼Œå³å‚æ•°ä¸ºäºŒç»´æ•°ç»„
+					if(is_array($v)){//Èç¹ûÊý×éµÄµÚÒ»¸öÔªËØ»¹ÊÇÊý×é£¬¼´²ÎÊýÎª¶þÎ¬Êý×é
 						switch ($v[0]) {
 							case '>':
 							case '<':
@@ -100,9 +100,9 @@
 								break;
 							case "between":
 								if(is_array($v[1])){
-									$sql .="{$k} between {$v[1][0]} and {$v[1][1]} and";//$where = array('id'=>array('between',array(4,6))) ä¸‰ç»´æ•°ç»„
+									$sql .="{$k} between {$v[1][0]} and {$v[1][1]} and";//$where = array('id'=>array('between',array(4,6))) ÈýÎ¬Êý×é
 								}elseif(is_numeric($v[1]) && is_numeric($v[2])){
-									$sql .="{$k} between {$v[1]} and {$v[2]} and";//$where = array('id'=>array('between',4,6)) äºŒç»´æ•°ç»„
+									$sql .="{$k} between {$v[1]} and {$v[2]} and";//$where = array('id'=>array('between',4,6)) ¶þÎ¬Êý×é
 								}
 								break;
 							case "like":
@@ -128,12 +128,12 @@
 		}
 	
 		/**
-		 *è®¾ç½®æŸ¥è¯¢è¯­å¥ä¸­çš„groupæ¡ä»¶
+		 *ÉèÖÃ²éÑ¯Óï¾äÖÐµÄgroupÌõ¼þ
 		 * @param $group
-		 * $group åˆ†ç»„æ¡ä»¶
-		 * å¯ä»¥æ˜¯å­—ç¬¦ä¸²ï¼Œä¹Ÿå¯ä»¥æ˜¯æ•°ç»„
-		 * å­—ç¬¦ä¸²ç¤ºä¾‹: id,name
-		 * æ•°ç»„ç¤ºä¾‹: array('id','name')
+		 * $group ·Ö×éÌõ¼þ
+		 * ¿ÉÒÔÊÇ×Ö·û´®£¬Ò²¿ÉÒÔÊÇÊý×é
+		 * ×Ö·û´®Ê¾Àý: id,name
+		 * Êý×éÊ¾Àý: array('id','name')
 		 * @return $this
 		 */
 		function group($group){
@@ -148,12 +148,12 @@
 		}
 
 		/**
-		 * è®¾ç½®æŸ¥è¯¢è¯­å¥ä¸­çš„orderæ¡ä»¶
+		 * ÉèÖÃ²éÑ¯Óï¾äÖÐµÄorderÌõ¼þ
 		 * @param $order
-		 * $order æŽ’åºæ¡ä»¶
-		 * å¯ä»¥æ˜¯å­—ç¬¦ä¸²ï¼Œä¹Ÿå¯ä»¥æ˜¯æ•°ç»„
-		 * å­—ç¬¦ä¸²ç¤ºä¾‹: id DESC,name
-		 * æ•°ç»„ç¤ºä¾‹: array('id'=>"DESC",'name'=>"ASC")
+		 * $order ÅÅÐòÌõ¼þ
+		 * ¿ÉÒÔÊÇ×Ö·û´®£¬Ò²¿ÉÒÔÊÇÊý×é
+		 * ×Ö·û´®Ê¾Àý: id DESC,name
+		 * Êý×éÊ¾Àý: array('id'=>"DESC",'name'=>"ASC")
 		 * @return $this
 		 */
 		function order($order){
@@ -177,14 +177,14 @@
 		}
 
 		/**
-		 * è®¾ç½®æŸ¥è¯¢è¯­å¥ä¸­çš„limitæ¡ä»¶
+		 * ÉèÖÃ²éÑ¯Óï¾äÖÐµÄlimitÌõ¼þ
 		 * @param $start
-		 * $start å¼€å§‹ä½ç½®
-		 * åªèƒ½æ˜¯æ•´åž‹
-		 * æ•´åž‹ç¤ºä¾‹:3
-		 * @param int $length ï¼ˆå¯é€‰ï¼‰
-		 * $length æ•°æ®æ¡æ•°
-		 * åªèƒ½æ•´åž‹
+		 * $start ¿ªÊ¼Î»ÖÃ
+		 * Ö»ÄÜÊÇÕûÐÍ
+		 * ÕûÐÍÊ¾Àý:3
+		 * @param int $length £¨¿ÉÑ¡£©
+		 * $length Êý¾ÝÌõÊý
+		 * Ö»ÄÜÕûÐÍ
 		 * @return $this
 		 */
 		function limit($limit,$length=0){
@@ -193,15 +193,15 @@
 			}else{
 				$sql = "limit {$limit},{$length}";// $limit=('1,2');
 			}
-			$this->order = $sql;
+			$this->limit = $sql;
 			return $this;
 		}
 
 		/**
-		 * è®¾ç½®insert updateæ—¶çš„æ•°æ®å†…å®¹
+		 * ÉèÖÃinsert updateÊ±µÄÊý¾ÝÄÚÈÝ
 		 * @param $data
-		 * åªèƒ½æ˜¯æ•°ç»„
-		 * æ•°ç»„ç¤ºä¾‹ï¼šarray('id'=>'','name'=>'test')
+		 * Ö»ÄÜÊÇÊý×é
+		 * Êý×éÊ¾Àý£ºarray('id'=>'','name'=>'test')
 		 * @return $this
 		 */
 		function data($data){
@@ -210,16 +210,16 @@
 		}
 
 // --------------------------------------------------------------------------------
-// ä¸Šé¢ä¸ºSQLçš„æ¡ä»¶
+// ÉÏÃæÎªSQLµÄÌõ¼þ
 // --------------------------------------------------------------------------------
 
 		/**
-		 * 	æ‰§è¡ŒæŸ¥è¯¢å•æ¡ç»“æžœæ“ä½œ
+		 * 	Ö´ÐÐ²éÑ¯µ¥Ìõ½á¹û²Ù×÷
 		 * @return array|bool|null
-		 * å½“æœ‰ç»“æžœæ—¶è¿”å›žä¸€ç»´æ•°ç»„
-		 * æŸ¥è¯¢å¤±è´¥è¿”å›ž false
-		 * æ²¡æœ‰ç»“æžœè¿”å›ž null
-		 * éœ€è¦ä½¿ç”¨===falseåˆ¤æ–­æ˜¯å¦æ‰§è¡ŒæˆåŠŸ
+		 * µ±ÓÐ½á¹ûÊ±·µ»ØÒ»Î¬Êý×é
+		 * ²éÑ¯Ê§°Ü·µ»Ø false
+		 * Ã»ÓÐ½á¹û·µ»Ø null
+		 * ÐèÒªÊ¹ÓÃ===falseÅÐ¶ÏÊÇ·ñÖ´ÐÐ³É¹¦
 		 */
 		function find(){
 			$sql = "select {$this->field} from {$this->_table} {$this->join} {$this->where} {$this->group} {$this->order} limit 1";
@@ -229,12 +229,12 @@
 		}
 
 		/**
-		 * æ‰§è¡ŒæŸ¥è¯¢å¤šæ¡ç»“æžœæ“ä½œ
+		 * Ö´ÐÐ²éÑ¯¶àÌõ½á¹û²Ù×÷
 		 * @return array|bool|null
-		 * å½“æœ‰ç»“æžœæ—¶è¿”å›žäºŒç»´æ•°ç»„
-		 * æŸ¥è¯¢å¤±è´¥è¿”å›ž false
-		 * æ²¡æœ‰ç»“æžœè¿”å›ž null
-		 * éœ€è¦ä½¿ç”¨===falseåˆ¤æ–­æ˜¯å¦æ‰§è¡ŒæˆåŠŸ
+		 * µ±ÓÐ½á¹ûÊ±·µ»Ø¶þÎ¬Êý×é
+		 * ²éÑ¯Ê§°Ü·µ»Ø false
+		 * Ã»ÓÐ½á¹û·µ»Ø null
+		 * ÐèÒªÊ¹ÓÃ===falseÅÐ¶ÏÊÇ·ñÖ´ÐÐ³É¹¦
 		 */
 		function select(){
 			$sql = "select {$this->field} from {$this->_table} {$this->join} {$this->where} {$this->group} {$this->order} {$this->limit}";
@@ -244,13 +244,13 @@
 
 		/**
 		 *	@return 
-		 *	æ‰§è¡ŒæˆåŠŸè¿”å›žå—å½±å“è¡Œæ•°
-		 *	æ‰§è¡Œå¤±è´¥è¿”å›žboolå€¼ false
+		 *	Ö´ÐÐ³É¹¦·µ»ØÊÜÓ°ÏìÐÐÊý
+		 *	Ö´ÐÐÊ§°Ü·µ»ØboolÖµ false
 		*/
 		function delete(){
 			$sql = "delete from {$this->_table} {$this->where}";
 			$re = self::$mysqli -> query($sql);
-			$this->sql = $sql;//æŠŠSQLè¯­å¥èµ‹å€¼ï¼Œæ–¹ä¾¿è°ƒç”¨æŸ¥çœ‹
+			$this->sql = $sql;//°ÑSQLÓï¾ä¸³Öµ£¬·½±ãµ÷ÓÃ²é¿´
 			if($re){
 				return self::$mysqli->affected_rows;
 			}else{
@@ -259,10 +259,10 @@
 		}
 
         /**
-         * æ‰§è¡Œæ’å…¥æ“ä½œ
+         * Ö´ÐÐ²åÈë²Ù×÷
          * @return bool|mixed
-         * æ‰§è¡Œå¤±è´¥è¿”å›žfalse
-         * æ‰§è¡ŒæˆåŠŸè¿”å›žinsert_id(è‡ªå¢žé•¿id)
+         * Ö´ÐÐÊ§°Ü·µ»Øfalse
+         * Ö´ÐÐ³É¹¦·µ»Øinsert_id(×ÔÔö³¤id)
          */
         function insert(){
 			$insert_sql=$this->createInsertData();
@@ -278,17 +278,17 @@
 		}
 
         /**
-         * æ‰§è¡Œæ›´æ–°æ“ä½œ
+         * Ö´ÐÐ¸üÐÂ²Ù×÷
          * @return bool|int
-         * æ‰§è¡Œå¤±è´¥è¿”å›žfalse
-         * æ‰§è¡ŒæˆåŠŸè¿”å›žå—å½±å“çš„è¡Œæ•°
+         * Ö´ÐÐÊ§°Ü·µ»Øfalse
+         * Ö´ÐÐ³É¹¦·µ»ØÊÜÓ°ÏìµÄÐÐÊý
          */
         function update(){
 			$update_sql=$this->createUpdateData();
 			if(!$update_sql){
 				return false;
 			}
-			if(!$this->where){//é˜²æ­¢å‡ºçŽ°æ•°æ®åº“äº‹æ•…
+			if(!$this->where){//·ÀÖ¹³öÏÖÊý¾Ý¿âÊÂ¹Ê
 				$this->setError('E02',$this->error['E02']);
 				return false;
 			}
@@ -301,10 +301,10 @@
 		}
 
 		/**
-		 * æ‰§è¡Œç»Ÿè®¡æ€»æ•°æ“ä½œ
+		 * Ö´ÐÐÍ³¼Æ×ÜÊý²Ù×÷
 		 * @return bool|int
-		 * æŸ¥è¯¢å¤±è´¥è¿”å›ž false
-		 * æŸ¥è¯¢æˆåŠŸè¿”å›žä¸€ä¸ªæ•´åž‹æ•°å­—
+		 * ²éÑ¯Ê§°Ü·µ»Ø false
+		 * ²éÑ¯³É¹¦·µ»ØÒ»¸öÕûÐÍÊý×Ö
 		 */
 		function count(){
 			$sql = "select count(*) as hf_sum from {$this->_table}{$this->join}{$this->where}{$this->group}{$this->order} limit 1";
@@ -317,25 +317,48 @@
 			}
 		}
 
+		/**
+		*	»ñµÃ×Ö¶ÎÀïµÄ×î´óÖµ
+		*	@param int×Ö¶Î
+		*	@return ¸Ã×Ö¶ÎÀíÓÉµÄ×î´óÖµ 
+		*/
+		function max($name){
+			$sql = "select $name from {$this->_table}{$this->where} order by $name DESC";
+			$result=$this->query($sql);
+			return $result[0][$name];
+		}
+
+		/**
+		*	»ñµÃ×Ö¶ÎÀïµÄ×îÐ¡Öµ
+		*	@param int×Ö¶Î
+		*	@return ¸Ã×Ö¶ÎÀíÓÉµÄÐ¡Öµ 
+		*/
+		function min($name){
+			$sql = "select $name from {$this->_table}{$this->where} order by $name ASC";
+			$result=$this->query($sql);
+			return $result[0][$name];
+		}
+
+
 // --------------------------------------------------------------------------------
-// ä¸Šé¢ä¸ºSQLçš„å…·ä½“æ“ä½œ
+// ÉÏÃæÎªSQLµÄ¾ßÌå²Ù×÷
 // --------------------------------------------------------------------------------
 
 		/**
-		 * æ‰§è¡ŒæŸ¥è¯¢å•æ¡ç»“æžœçš„sqlè¯­å¥ selectå•æ¡
+		 * Ö´ÐÐ²éÑ¯µ¥Ìõ½á¹ûµÄsqlÓï¾ä selectµ¥Ìõ
 		 * @param $sql
-		 * $sql æŸ¥è¯¢è¯­å¥
-		 * åªèƒ½æ˜¯å­—ç¬¦ä¸²
+		 * $sql ²éÑ¯Óï¾ä
+		 * Ö»ÄÜÊÇ×Ö·û´®
 		 * @return array|bool|null
-		 * å½“æœ‰ç»“æžœæ—¶è¿”å›žä¸€ç»´æ•°ç»„
-		 * æŸ¥è¯¢å¤±è´¥è¿”å›ž false
-		 * æ²¡æœ‰ç»“æžœè¿”å›ž null
-		 * éœ€è¦ä½¿ç”¨===falseåˆ¤æ–­æ˜¯å¦æ‰§è¡ŒæˆåŠŸ
+		 * µ±ÓÐ½á¹ûÊ±·µ»ØÒ»Î¬Êý×é
+		 * ²éÑ¯Ê§°Ü·µ»Ø false
+		 * Ã»ÓÐ½á¹û·µ»Ø null
+		 * ÐèÒªÊ¹ÓÃ===falseÅÐ¶ÏÊÇ·ñÖ´ÐÐ³É¹¦
 		 */
 		function query_one($sql){
 			$re = self::$mysqli->query($sql);
 			$this->sql = $sql;
-			$this->clearParam();//æ¸…ç©ºå±žæ€§çš„æ¡ä»¶å€¼
+			$this->clearParam();//Çå¿ÕÊôÐÔµÄÌõ¼þÖµ
 			if($re ===false){
 				$this->setError();//?????????????????????????????????????????????
 				return false;
@@ -343,26 +366,26 @@
 				$re->num_rows;
 				return null;
 			}else{
-				return $re->fetch_assoc();//è¿”å›žä¸€ä½æ•°ç»„
+				return $re->fetch_assoc();//·µ»ØÒ»Î»Êý×é
 			}
 		}
 
         /**
-         * æ‰§è¡ŒæŸ¥è¯¢å¤šæ¡ç»“æžœçš„sqlè¯­å¥ select
+         * Ö´ÐÐ²éÑ¯¶àÌõ½á¹ûµÄsqlÓï¾ä select
          * @param $sql
-         * $sql æŸ¥è¯¢è¯­å¥
-         * åªèƒ½æ˜¯å­—ç¬¦ä¸²
+         * $sql ²éÑ¯Óï¾ä
+         * Ö»ÄÜÊÇ×Ö·û´®
          * @return array|bool|null
-         * å½“æœ‰ç»“æžœæ—¶è¿”å›žäºŒç»´æ•°ç»„
-         * æŸ¥è¯¢å¤±è´¥è¿”å›ž false
-         * æ²¡æœ‰ç»“æžœè¿”å›ž null
-         * éœ€è¦ä½¿ç”¨===falseåˆ¤æ–­æ˜¯å¦æ‰§è¡ŒæˆåŠŸ
+         * µ±ÓÐ½á¹ûÊ±·µ»Ø¶þÎ¬Êý×é
+         * ²éÑ¯Ê§°Ü·µ»Ø false
+         * Ã»ÓÐ½á¹û·µ»Ø null
+         * ÐèÒªÊ¹ÓÃ===falseÅÐ¶ÏÊÇ·ñÖ´ÐÐ³É¹¦
          */
 		function query($sql){
 			$re = self::$mysqli->query($sql);
 			// print_r($re);
 			$this->sql = $sql;
-			$this->clearParam();//æ¸…ç©ºå±žæ€§çš„æ¡ä»¶å€¼
+			$this->clearParam();//Çå¿ÕÊôÐÔµÄÌõ¼þÖµ
 			if($re === false){
 				$this->setError();//?????????????????????????????????????????????
 				return false;
@@ -373,20 +396,20 @@
 				while($r = $re->fetch_assoc()){
 					$list[]=$r;
 				}
-				return $list ;//è¿”å›žäºŒç»´æ•°ç»„
+				return $list ;//·µ»Ø¶þÎ¬Êý×é
 			}
 		}
 
 		/**
-          * æ‰§è¡ŒæŸ¥è¯¢æ“ä½œè¯­å¥çš„sql,insert,updateç”¨åˆ°
-          * ã€Š--ä¹Ÿå¯ä»¥å¯¹å¤–å¼€æ”¾ï¼Œåšä¸€äº›ç›´æŽ¥è¾“å…¥SQLè¯­å¥ï¼Œåœ¨è°ƒç”¨æ£€æµ‹å½±å“å‡½æ•°ï¼Œå³ï¼Œæœ‰è¿™ä¸ªå‡½æ•°ï¼Œæ”¯æŒæœ€åŽŸå§‹çš„SQLæŸ¥è¯¢--ã€‹
+          * Ö´ÐÐ²éÑ¯²Ù×÷Óï¾äµÄsql,insert,updateÓÃµ½
+          * ¡¶--Ò²¿ÉÒÔ¶ÔÍâ¿ª·Å£¬×öÒ»Ð©Ö±½ÓÊäÈëSQLÓï¾ä£¬ÔÚµ÷ÓÃ¼ì²âÓ°Ïìº¯Êý£¬¼´£¬ÓÐÕâ¸öº¯Êý£¬Ö§³Ö×îÔ­Ê¼µÄSQL²éÑ¯--¡·
           * @param $sql
-          * $sql æŸ¥è¯¢è¯­å¥
-          * åªèƒ½æ˜¯å­—ç¬¦ä¸²
-          * å­—ç¬¦ä¸²ç¤ºä¾‹:delete from t where id = 1
+          * $sql ²éÑ¯Óï¾ä
+          * Ö»ÄÜÊÇ×Ö·û´®
+          * ×Ö·û´®Ê¾Àý:delete from t where id = 1
           * @return bool
-          * æŸ¥è¯¢å¤±è´¥è¿”å›ž false
-          * æ²¡æœ‰ç»“æžœè¿”å›ž true
+          * ²éÑ¯Ê§°Ü·µ»Ø false
+          * Ã»ÓÐ½á¹û·µ»Ø true
           *
          */
 		function exec($sql){
@@ -400,43 +423,43 @@
 		}
 
         /**
-         * å°†dataæ–¹æ³•æ‰€å­˜å‚¨çš„æ•°ç»„è½¬æˆinsertè¯­å¥
+         * ½«data·½·¨Ëù´æ´¢µÄÊý×é×ª³ÉinsertÓï¾ä
          * @return bool|string
-         * å¦‚æžœdataå±žæ€§ä¸æ˜¯æ•°ç»„åˆ™è¿”å›ž  false
-         * å¦‚æžœdataå±žæ€§æ˜¯æ•°ç»„åˆ™è¿”å›žè½¬æ¢çš„ç»“æžœ
-         * æ‰€ä»¥è¯´ï¼ŒæŒ‰ç…§ä¸€ä½æ•°ç»„æ’å…¥å•æ¡æ•°æ®ï¼ŒäºŒç»´æ•°ç»„æ’å…¥å¤šæ¡æ•°æ®ä¸ºå‡†åˆ™
+         * Èç¹ûdataÊôÐÔ²»ÊÇÊý×éÔò·µ»Ø  false
+         * Èç¹ûdataÊôÐÔÊÇÊý×éÔò·µ»Ø×ª»»µÄ½á¹û
+         * ËùÒÔËµ£¬°´ÕÕÒ»Î»Êý×é²åÈëµ¥ÌõÊý¾Ý£¬¶þÎ¬Êý×é²åÈë¶àÌõÊý¾ÝÎª×¼Ôò
          *    
-         *    ä¸€ç»´
+         *    Ò»Î¬
          * array(
          *	 'id'=>0,
          *	 'name'=>'test',
          * )
          *
-         *	äºŒç»´
+         *	¶þÎ¬
          * array(
 		 *	0=>array('id'=>'';'name'=>'aa'),
 		 *	1=>array('id'=>'';'name'=>'aa'),
-		 *	2=>'1111',//è¦è¢«è¿‡æ»¤æŽ‰
+		 *	2=>'1111',//Òª±»¹ýÂËµô
 		 *	3=>array('id'=>'';'name'=>'aa'),
          *)
          */
         function createInsertData(){
-			if(is_array($this->data)){//åœ¨data()ä¸­å·²ç»å­˜å…¥äº†æ•°æ®
-				$first_array=current($this->data);//æŠŠdata[0]çš„å€¼èµ‹ç»™å®ƒï¼Œåˆ¤æ–­å®ƒæ˜¯ä¸æ˜¯æ•°ç»„				
-				if(is_array($first_array)){//å¦‚æžœå®ƒä¸ºäºŒç»´æ•°ç»„
+			if(is_array($this->data)){//ÔÚdata()ÖÐÒÑ¾­´æÈëÁËÊý¾Ý
+				$first_array=current($this->data);//°Ñdata[0]µÄÖµ¸³¸øËü£¬ÅÐ¶ÏËüÊÇ²»ÊÇÊý×é				
+				if(is_array($first_array)){//Èç¹ûËüÎª¶þÎ¬Êý×é
 					$insert_sql='('.implode(',',array_keys($first_array)).') values ';
 					foreach($this->data as $row){
-						if(is_array($row)){//è¿‡æ»¤ç¬¬äºŒç»´çš„ä¸æ˜¯æ•°ç»„çš„å…ƒç´ ï¼Œå¦‚ä¸Šè¾¹ä¾‹å­
+						if(is_array($row)){//¹ýÂËµÚ¶þÎ¬µÄ²»ÊÇÊý×éµÄÔªËØ£¬ÈçÉÏ±ßÀý×Ó
 							echo  $insert_sql .="('".implode("','",array_values($row))."'),";
 						}
 					}
-					return substr($insert_sql,0,-1);//åŽ»é™¤æœ€åŽçš„é€—å·
-				}else{//å½“å‰æ•°ç»„æ˜¯ä¸€ç»´æ•°ç»„ï¼Œç›´æŽ¥å‰¥é”®åï¼Œé”®å€¼ç»„æˆSQLè¯­å¥
+					return substr($insert_sql,0,-1);//È¥³ý×îºóµÄ¶ººÅ
+				}else{//µ±Ç°Êý×éÊÇÒ»Î¬Êý×é£¬Ö±½Ó°þ¼üÃû£¬¼üÖµ×é³ÉSQLÓï¾ä
 					$insert_sql='('.implode(',',array_keys($this->data)).') values ';
 					$insert_sql.="('".implode("','",array_values($this->data))."')";
 					return $insert_sql;
 				}
-			}else{//å¿…é¡»æ˜¯æ•°ç»„ï¼Œå¦åˆ™æŠ¥é”™
+			}else{//±ØÐëÊÇÊý×é£¬·ñÔò±¨´í
 				$this->setError('E01',$this->error['E01']);
 				return false;
 			}
@@ -444,11 +467,11 @@
 
 
         /**
-         * æ‰§è¡Œæ›´æ–°æ“ä½œ
-         * å°†dataæ–¹æ³•æ‰€å­˜å‚¨çš„æ•°ç»„è½¬æˆupdateè¯­å¥
+         * Ö´ÐÐ¸üÐÂ²Ù×÷
+         * ½«data·½·¨Ëù´æ´¢µÄÊý×é×ª³ÉupdateÓï¾ä
          * @return bool|string
-         * å¦‚æžœdataå±žæ€§ä¸æ˜¯æ•°ç»„åˆ™è¿”å›ž  false
-         * å¦‚æžœdataå±žæ€§æ˜¯æ•°ç»„åˆ™è¿”å›žè½¬æ¢çš„ç»“æžœ
+         * Èç¹ûdataÊôÐÔ²»ÊÇÊý×éÔò·µ»Ø  false
+         * Èç¹ûdataÊôÐÔÊÇÊý×éÔò·µ»Ø×ª»»µÄ½á¹û
          */
         function createUpdateData(){
 			if(is_array($this->data)){
@@ -464,37 +487,37 @@
 		}
 
         /**
-         * è®¾ç½®é”™è¯¯ç¼–å·
+         * ÉèÖÃ´íÎó±àºÅ
          * @param $errno
-         * $errno é”™è¯¯ç¼–å·
-         * å­—ç¬¦ä¸²ç¤ºä¾‹ï¼š E01
+         * $errno ´íÎó±àºÅ
+         * ×Ö·û´®Ê¾Àý£º E01
          * @param string $error
-         * $error é”™è¯¯æç¤º
-         * å­—ç¬¦ä¸²ç¤ºä¾‹: æ²¡æœ‰æ•°æ®
-         * å¦‚æžœè®¾ç½®å‚æ•°åˆ™ä¼˜å…ˆä½¿ç”¨å‚æ•°ï¼Œå¦‚æžœæœªæä¾›åˆ™ä½¿ç”¨ç³»ç»Ÿé”™è¯¯ä¿¡æ¯
+         * $error ´íÎóÌáÊ¾
+         * ×Ö·û´®Ê¾Àý: Ã»ÓÐÊý¾Ý
+         * Èç¹ûÉèÖÃ²ÎÊýÔòÓÅÏÈÊ¹ÓÃ²ÎÊý£¬Èç¹ûÎ´Ìá¹©ÔòÊ¹ÓÃÏµÍ³´íÎóÐÅÏ¢
          */
 		function setError($errno=0,$error=''){
-			if(self::$mysqli->errno && $errno==0){//æŒ‡ç³»ç»Ÿçš„é”™è¯¯ï¼Œæ”¾åœ¨å‰è¾¹ä¼˜å…ˆçº§é«˜
-				$this->error_info['errno']=self::$mysqli->errno;//è¿”å›žé”™è¯¯ä¿¡æ¯ä»£ç ã€‚
-				$this->error_info['error']=self::$mysqli->error;//è¿”å›žä¸Šä¸€ä¸ª MySQL æ“ä½œäº§ç”Ÿçš„æ–‡æœ¬é”™è¯¯ä¿¡æ¯ 
-			}elseif($errno>0){//äººå·¥è®¾ç½®çš„é”™è¯¯
+			if(self::$mysqli->errno && $errno==0){//Ö¸ÏµÍ³µÄ´íÎó£¬·ÅÔÚÇ°±ßÓÅÏÈ¼¶¸ß
+				$this->error_info['errno']=self::$mysqli->errno;//·µ»Ø´íÎóÐÅÏ¢´úÂë¡£
+				$this->error_info['error']=self::$mysqli->error;//·µ»ØÉÏÒ»¸ö MySQL ²Ù×÷²úÉúµÄÎÄ±¾´íÎóÐÅÏ¢ 
+			}elseif($errno>0){//ÈË¹¤ÉèÖÃµÄ´íÎó
 				$this->error_info['errno']=$errno;
 				$this->error_info['error']=$error;
 			}
 		}
 
         /**
-         * èŽ·å–ä¸Šä¸€æ¬¡é”™è¯¯ä¿¡æ¯
+         * »ñÈ¡ÉÏÒ»´Î´íÎóÐÅÏ¢
          * @return mixed
-         * è¿”å›žä¸Šä¸€æ¬¡é”™è¯¯ä¿¡æ¯
-         * è¿”å›žå†…å®¹ä¸ºæ•°ç»„ åŒ…å« errno error
-         * è¿”å›žç¤ºä¾‹ array('errno'=>'E01','error'=>"æ²¡æœ‰æ•°æ®")
+         * ·µ»ØÉÏÒ»´Î´íÎóÐÅÏ¢
+         * ·µ»ØÄÚÈÝÎªÊý×é °üº¬ errno error
+         * ·µ»ØÊ¾Àý array('errno'=>'E01','error'=>"Ã»ÓÐÊý¾Ý")
          */
         function getError(){
 			return $this->error_info;
 		}
 
-		// ç»è¿‡è¯­å¥çš„è°ƒç”¨ï¼Œæ¸…ç©ºå±žæ€§çš„å€¼
+		// ¾­¹ýÓï¾äµÄµ÷ÓÃ£¬Çå¿ÕÊôÐÔµÄÖµ
 		function clearParam(){
 			$this->field="*";
 			$this->where="";
@@ -505,17 +528,17 @@
 			$this->data="";
 		}
 
-		// èŽ·å–å½“å‰çš„SQLä»£ç å› ä¸ºä¸Šè¾¹æ¯ä¸€ä¸ªæ“ä½œå‡½æ•°éƒ½æˆ–æŠŠSQLå­˜å…¥$sql
+		// »ñÈ¡µ±Ç°µÄSQL´úÂëÒòÎªÉÏ±ßÃ¿Ò»¸ö²Ù×÷º¯Êý¶¼»ò°ÑSQL´æÈë$sql
 		function getLastSql(){
 		 	return $this->sql;
 		}
 
 // --------------------------------------------------------------------------------
-// ä¸Šé¢ä¸ºSQLçš„çš„è¾…åŠ©å‡½æ•°
+// ÉÏÃæÎªSQLµÄµÄ¸¨Öúº¯Êý
 // --------------------------------------------------------------------------------
 		
         /**
-         * å¼€å¯äº‹åŠ¡
+         * ¿ªÆôÊÂÎñ
          * @return bool
          */
         function startTrans(){
@@ -526,7 +549,7 @@
 
 
         /**
-         * æäº¤äº‹åŠ¡
+         * Ìá½»ÊÂÎñ
          * @return bool
          */
         function commit(){
@@ -534,7 +557,7 @@
 		}
 
         /**
-         * å›žæ»šäº‹åŠ¡
+         * »Ø¹öÊÂÎñ
          * @return bool
          */
         function rollback(){
@@ -548,7 +571,7 @@
 			return $this->exec($sql);
 		}
 // --------------------------------------------------------------------------------
-// ä¸Šé¢ä¸ºSQLçš„äº‹åŠ¡æ“ä½œ
+// ÉÏÃæÎªSQLµÄÊÂÎñ²Ù×÷
 // --------------------------------------------------------------------------------
 
 
