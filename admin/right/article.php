@@ -5,28 +5,39 @@
 
   // 检测在哪个页面，回收站和文章列表
   if(isset($_GET['sign'])){
-    $status = "已删除";
+    $status = "-1";
   }else{
-    $status = "全部";
+    $status = "3";//查询默认值，即查询非删除类
   }
 
-  // 设置默认排序规则
-  $order = " article_create_time DESC ";
-  // 根据用户需求设置排序规则
+ 
+  // 根据用户需求设置排序规则 (switch)
   if(isset($_GET['order_a'])){
-    $order = "  article_user_id DESC ";
+    $order = "  article_user_id DESC "; //按用户排序
   }elseif(isset($_GET['order_c'])){
-    $order = " article_category_id DESC ";
+    $order = " article_category_id DESC ";//分类排序
   }elseif(isset($_GET['order_s'])){
-    $order = " article_status DESC ";
+    $order = " article_status DESC ";//按发布状态排序
+  }elseif(isset($_GET['order_c'])){
+    $order = " article_create_time DESC ";//按发布时间排序
+  }elseif(isset($_GET['order_u'])){
+    $order = " article_update_time DESC ";//按更新时间排序
+  }else{
+    $order = " article_update_time DESC "; // 设置默认排序规则
   }
 
-// 查询文章信息
-  $list = search_art_cate_user($status,$order);
+
+  // 查询文章信息(分页)返回三维信息
+  if(!isset($_GET['page'])){
+    $_GET['page']=1;
+  }
+  $ar_page = search_art_cate_user( $_GET['page'],10,$order,$status);
+  $list = $ar_page['info'];//把数据信息给list
+  $page = $ar_page['page_html'];//把HTML 代码返给page;
 
   // 检测是否有恢复操作
   if(isset($_GET['recover']) && $_GET['recover']="true"){
-    $data['article_status']="未审核";
+    $data['article_status']="0";
     $re = update_article($_GET['article_id'],$data);
     if($re){
       jump(2,PATH."article.php?sign=1","恢复成功","success");
@@ -39,7 +50,7 @@
 
   // 检测是否有删除操作
   if(isset($_GET['del']) &&$_GET['del']="true"){
-    $data['article_status']="已删除";
+    $data['article_status']="-1";
     $re = update_article($_GET['article_id'],$data);
     if($re){
       jump(2,PATH."article.php","删除成功","success");
@@ -60,6 +71,7 @@
 
     <meta http-equiv="content-type" content="texl/html;charset=utf-8" >
     <link rel="stylesheet" href="../css/article.css">
+    <link rel="stylesheet" href="../css/pager.css"><!--引入分页CSS-->
   </head>
   <body>
     <div class="contain">
@@ -76,8 +88,8 @@
               <td width="10%"><a href="<?php echo PATH."article.php?order_a=true" ?>">作者</a></td>
               <td width="10%"><a href="<?php echo PATH."article.php?order_c=true" ?>">所属分类</a></td>
               <td width="10%"><a href="<?php echo PATH."article.php?order_s=true" ?>">发布状态</a></td>
-              <td width="10%">发布时间</td>
-              <td width="10%">修改时间</td>
+              <td width="10%"><a href="<?php echo PATH."article.php?order_c=true" ?>">发布时间</a></td>
+              <td width="10%"><a href="<?php echo PATH."article.php?order_u=true" ?>">修改时间</a></td>
               <td width="10%">操作</td>
             </tr>
  <?php  
@@ -87,7 +99,28 @@
                       <td><?php echo "$v[article_title]"; ?></td>              
                       <td><?php echo "$v[username]"; ?></td>              
                       <td><?php echo  $v['cat_name']; ?></td>              
-                      <td><?php echo "$v[article_status]"; ?></td>              
+                      <td>
+                        <?php 
+                          switch ($v['article_status']) {
+                            case '0':
+                              $_sta = "未审核";
+                              break;
+                            case '1':
+                              $_sta = "已审核";
+                              break;
+                            case '2':
+                              $_sta = "审核未通过";
+                              break;
+                            case '-1':
+                              $_sta = "已删除";
+                              break;
+                            default:
+                              $_sta = "状态出错，请联系管理员";
+                              break;
+                          }
+                          echo $_sta; 
+                        ?>
+                      </td>              
                       <td><?php echo date("Y-m-d H:i:s",$v['article_create_time']); ?></td>              
                       <td><?php echo date("Y-m-d H:i:s",$v['article_update_time']); ?></td>   
                       <td>
@@ -98,7 +131,6 @@
                         <a href="article_editor.php?article_id=<?php echo $v['article_id']?>">修改</a>
                         <?php } ?>
                       </td>
-                           
                   </tr>
 <?php 
                 }  
@@ -108,6 +140,7 @@
          ?>
 
           </table>
+          <?php echo $page; ?>
     </div>
   </body>
 </html>

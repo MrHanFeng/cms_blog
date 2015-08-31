@@ -1,9 +1,23 @@
 
 	<?php 
 		include_once('header.php');
+		
 
-		// 查询文章,分类，评论信息，用于文章列表
-		$ar_ca_info = get_article_cate();
+		// 如果点击了分类栏,输入该分类ID，查询文章
+		if(isset($_GET['action']) && $_GET['action']='second' ){
+			$cate_id = $_GET['cat_id'];
+		}else{
+			$cate_id = '-1';
+		}
+
+
+		// 查询文章,分类，评论信息，用于文章列表[分页]
+		if(!isset($_GET['page'])){
+			$_GET['page'] = '1';
+		}
+		$arr = get_article_cate(@$_GET['page'],6,$cate_id);
+		$ar_ca_info = $arr['info'];
+		$page = $arr['page_html'];
 		// show($ar_ca_info);
 
 		// 查询评论条数
@@ -14,16 +28,24 @@
 		// show($cm_ar_info);		
 
 		// 随机获取文章
-		$rand_article = get_rand_ar(3);
+		$rand_article = get_rand_ar(10);
 
 		// 统计文章数量
 		$ar_num = count_article_num();
 		// 评论数量
-		$cm_num = count_com_num();
+		$cm_num = count_com_num(6);
 		// 运行天数计算
 		$time =	count_run_time();
 		// 上次更新时间
 		$last_update = get_last_update_time();
+
+		//将分类的二维数组变为已分类ID为KEY的二维数组 
+		$cate_arr=array();
+		foreach ($cate_info as $key => $value) {
+			$cate_arr[$value['cat_id']]=$value;
+		}
+
+
 
 	 ?>
 <!-- 中部  -->
@@ -32,16 +54,33 @@
 		<div id="loading-bar">
 			<div style="width: 100%; display: none;"></div>
 		</div>
+
+	<!--如果是次级分类的主页面-->
+	<?php if (isset($_GET['action']) && $_GET['action']="second") : ?>
 		
+		<div id="loading-bar"><div style="width: 100%; display: none;"></div></div>
+		<div class="page-head">
+					<h1 class="page-title"><?php echo $cate_arr[$_GET['cat_id']]['cat_name'] ?>	</h1>
+					<div class="stripe-line"></div>
+					<div class="clear"></div>
+					<div class="archive-meta">
+						<p><?php echo $cate_arr[$_GET['cat_id']]['cat_content'] ?></p>
+					</div>		
+	</div>
+	<?php endif ?>
+
+
 
 		<!--中左侧-->
 		<div class="content" style="border-right-width: 1px; border-right-style: solid; border-right-color: rgb(221, 221, 221);">
 			<div class="post-listing">
-	<?php foreach ($ar_ca_info as $k => $v) {  ?>
+	<?php 
+		if(!empty($ar_ca_info) ){
+			foreach ($ar_ca_info as $k => $v) {  ?>
 
 				<article class="item-list">
 					<h2 class="post-box-title">
-						<a target="_blank" href="" title="<?php echo $v['article_title'] ?>" rel="bookmark"><?php echo $v['article_title'] ?>
+						<a target="_blank" href="<?php  echo HOME_PATH."detail.php?article_id=$v[article_id]" ?>" title="<?php echo $v['article_title'] ?>" rel="bookmark"><?php echo $v['article_title'] ?>
 						</a>
 					</h2>
 					<p class="post-meta">
@@ -60,7 +99,7 @@
 						</span>
 					</p>
 					<div class="post-thumbnail">
-						<a target="_blank" href="http://www.ipeld.net/archives/8841.html" title="显示“快速访问” 的固定链接" rel="bookmark">
+						<a target="_blank" href="<?php  echo HOME_PATH."detail.php?article_id=$v[article_id]" ?>" title="显示“快速访问” 的固定链接" rel="bookmark">
 							<img width="300" height="300" src="./js/win10-quick-access-01-300x300.png" class="attachment-thumbnail wp-post-image" alt="win10-quick-access-01" original="http://www.ipeld.net/wp-content/uploads/2015/08/win10-quick-access-01-300x300.png">				
 							<span class="overlay-icon"></span>
 						</a>
@@ -74,7 +113,12 @@
 					<div class="clear"></div>
 				</article><!-- .item-list -->
 
-	<?php   } ?>
+	<?php   
+				}//end foreach
+			}else{
+				echo "<h1>抱歉，暂无文章,你能把我咋滴</h1>";
+			}
+	?>
 
 			</div>
 
@@ -82,16 +126,7 @@
 
 			<!-- 分页显示-->
 			<div class="pagination">
-				<span class="pages">当前第 1 页，共 39 页</span>
-				<span class="current">1</span>
-				<a href="http://www.ipeld.net/page/2" class="page" title="2">2</a><a href="http://www.ipeld.net/page/3" class="page" title="3">3</a>
-				<a href="http://www.ipeld.net/page/4" class="page" title="4">4</a><a href="http://www.ipeld.net/page/5" class="page" title="5">5</a>		<span id="tie-next-page">
-					<a href="http://www.ipeld.net/page/2">»</a>					
-				</span>
-				<a href="http://www.ipeld.net/page/10" class="page" title="10">10</a>
-				<a href="http://www.ipeld.net/page/20" class="page" title="20">20</a>
-				<a href="http://www.ipeld.net/page/30" class="page" title="30">30</a>
-				<span class="extend">...</span><a href="http://www.ipeld.net/page/39" class="last" title="最后一页 »">最后一页 »</a>	
+				<?php echo $page; ?>
 			</div>
 
 
@@ -115,11 +150,11 @@
 							<?php foreach ($cm_ar_info as $kk => $vv) {  ?>
 							<li>
 								<div class="erc_head">
-									<span class="erch_name" title="<?php echo $vv['article_title'] ?>"><?php echo $vv['username'] ?></span>
+									<span class="erch_name" title="<?php echo $vv['article_title'] ?>"><?php echo $vv['cm_nickname'] ?></span>
 									<span class="erch_date"><?php echo date("Y-m-d H:i:s",$vv['cm_time']) ?></span>
 								</div>
 								<div class="erc_body">
-									<a class="ercb_content" href="" target="_blank"><?php echo $vv['cm_content'] ?></a>
+									<a class="ercb_content" href="<?php echo HOME_PATH."detail.php?article_id=$vv[article_id]#comment-$vv[cm_id]" ?>" target="_blank"><?php echo $vv['cm_content'] ?></a>
 								</div>
 							</li>
 							<?php } ?>

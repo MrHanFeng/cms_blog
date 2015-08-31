@@ -44,12 +44,12 @@ function showsubmenu(sid) {
     <td width="39%" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td width="74%" height="38" class="admin_txt">管理员：<b><?php echo @$_SESSION['username']; ?></b> 您好,感谢登陆使用！</td>
-        <td width="22%"><a href= <?php PATH ?> "admin_top.php?clear_s=1" target="_top" onclick="return confirm('确定要退出？');"><img src="images/out.gif" alt="安全退出" width="46" height="20" border="0"></a></td>
         <td width="22%">
           <a href= <?php PATH ?> "right/change_pwd.php" target="main">
             <img src="images/change_pwd.gif" alt="修改密码" width="46" height="20" border="0">
           </a>
         </td>
+        <td width="22%"><a href= <?php PATH ?> "admin_top.php?clear_s=1" target="_parent" onclick="return confirm('确定要退出？');"><img src="images/out.gif" alt="安全退出" width="46" height="20" border="0"></a></td>
         <td width="4%">&nbsp;</td>
       </tr>
       <tr>

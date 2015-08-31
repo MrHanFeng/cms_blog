@@ -80,7 +80,7 @@
 		*/
 		function where($where){
 			if(is_string($where)){
-				$sql = "where {$where}";//$where="id>1"
+				$sql = " where {$where}";//$where="id>1"
 			}elseif(is_array($where)){
 				$sql = " where ";
 				foreach ($where as $k => $v) {

@@ -1,7 +1,7 @@
 <?php 
 	session_start();
-	define('PATH_ADMIN',dirname(__DIR__));
-	include_once(PATH_ADMIN.'/config.php');//引入配置文件
+	define('__ROOT__',dirname(__DIR__));//物理路径
+	include_once(__ROOT__.'/config.php');//引入配置文件
 
 	// 实例化对象快捷函数
 	function M($table){
@@ -73,43 +73,6 @@
 	}
 
 
-	/**
-	*	分页显示
-	*	@param 
-	*	$table_name 查询的表格名称
-	*	$per 每页要显示的条数
-	*	$sql 查询的SQL语句，纯语句
-	*	@return 返回三维数组
-	*	$arr=("info"=>"查询的全部数据","pagelist"=>"页码的HTML代码")，
-	*/
-	function page($table_name,$per,$sql){
-		$table = M("$table_name");
-		/*1.赋值配置*/
-		$total = $table->count();//计算总条数 【TP和自己写的SQL模版，count不知是否效果一样？】
-
-
-		/*2.实例化分页类*/
-		// $page = new \Component\Page($total,$per);//TP框架下用法：实例化分页类，分页类中相应要有命名空间
-		include_once(__ROOT__.'common/Page.class.php');//把分页类加载进来，与上边二选一
-
-		$page = new Page($total,$per);
-
-		///* 3.写SQL语句*/
-		$sql .= " ".$page->limit;//设置了每页限制
-
-		 /*4.获得页码列表*/
-
-		 // $info = $goods ->query($sql);//TP框架下的查询用法
-		$info = $table ->select($sql);//自定义的函数select用法，与上边二选一
-
-		$pagelist = $page->fpage();//获得分页信息
-
-		/*5.返回信息*/
-		$arr["info"]=$info;
-		$arr["pagelist"]=$pagelist;
-		return $arr;
-	}
-
 
 /*------------------------------------------------------------------------------*/
 /*-----------------------------以下为【登录登出】操作---------------------------*/
@@ -143,7 +106,13 @@
 					setcookie('password',$password,time()+3600*24*7);
 				}
 				set_user_session($user_info['mg_id'],$user_info['mg_name']);//通过了方法，减少了维护成本
-				jump('2',ADMIN_PATH."index.php",'登陆成功','success');
+
+				/*执行记录登录时间，登录次数加一操作*/
+				$where=" mg_id = $user_info[mg_id] ";
+				$data=array("mg_time"=>time(),"mg_num"=>$user_info['mg_num']+1);
+				$user_table->data($data)->where($where)->update();
+				
+				jump('2',ADMIN_PATH."index.php",'登录成功','success');
 			}else{
 				jump('2',ADMIN_PATH."log/login.php",'密码错误','error');
 			}
@@ -253,39 +222,52 @@
 	/**
 	* 	查询分类(category)与文章(article)与用户(user)对应关系
 	*   @param 为查询文章的状态，
-	*    默认为正常除了删除状态
-	* 	 赋值为已删除，查询已删除		
-	*   @return 二维索引数组，
-	*	 下标为分类的ID，值为所搜索的对应字段，
+	*    $status 文章状态
+	* 	 		默认为查询 1:已审核的文章，0:未审核,-1：已删除，2：审核未通过		
+	* 	 $order 排序规则
+	*			默认为创建时间降序排序
+	*	$cur_page 当前的文章页数 
+	* 	$per_num 每页显示条数 默认为10调
+	*   @return 三维索引数组，
+	*		$return['page_html'] :为分类的HTML代码
+	*		$return['info'] :数据的信息，二维数组，下标为分类的ID，值为所搜索的对应字段，
+	*	 
 	*/
-	function search_art_cate_user($status="非删除",$order=" article_create_time DESC"){
+	function search_art_cate_user($cur_page=1,$per_num=10,$order=" article_create_time DESC",$status=1){
 		  $article = M('cms_article');
+		  $total_num = $article->count();//计算文章总数
+		  $page_html = pager($total_num,$cur_page,$per_num);//返回分页HTML代码
+		  $limit = ($cur_page-1)*$per_num	;// 设置limit第一个参数参数,前边已经显示了多少数据 
+
 		  $join=" cms_category on cms_article.article_category_id = cms_category.cat_id LEFT JOIN cms_user ON cms_article.article_user_id = cms_user.user_id";
 		  // $field = "article_title,article_status,cms_category.cat_name,cms_category.cat_id";
 		  switch ($status) {
-		  	case '已发布':
-		  		$where = array("article_status"=>"已发布");
+		  	case '1':
+		  		$where = array("article_status"=>"1");
 		  		break;	
 
-	  		case '未审核':
-		  		$where = array("article_status"=>"未审核");
+	  		case '0':
+		  		$where = array("article_status"=>"0");
 	  		break;
 
-	  		case '审核未通过':
-	  			$where = array("article_status"=>"审核未通过");
+	  		case '2':
+	  			$where = array("article_status"=>"2");
 	  			break;	
 
-		  	case '已删除':
-		  		$where = array("article_status"=>"已删除");
+		  	case '-1':
+		  		$where = array("article_status"=>"-1");
 		  		break;
 		  	default:
-		  		$where = " article_status != '已删除'";
+		  		$where = " article_status != '-1'";
 		  		break;
 		  }
-		  $cate = $article->join($join)->where($where)->order($order)->select();
+		  $info = $article->join($join)->where($where)->order($order)->limit($limit,$per_num)->select();
+
+		  $return['page_html'] = $page_html;
+		  $return['info'] = $info;
 		  // echo $article->getLastSql();
-		  // show($cate);
-		  return $cate;
+		  // show($return);exit;
+		  return $return;
 	}
 	/**
 	*	查询文章表(article)中指定文章的信息
@@ -323,18 +305,32 @@
 
 	/**
 	*	查询链接表(cms_category)的信息
+	*	@param 
+	* 		$cur_page 当前为第几页
+	* 		$per_num 每页条数
 	*	@return
-	*	成功返回 链接表的信息, 二维数组
+	*	成功返回 链接表的信息, 三维数组
+	*		$return['page_html'] :为分类的HTML代码
+	*		$return['info'] :数据的信息，二维数组，下标为分类的ID，值为所搜索的对应字段，
 	*	失败返回false
 	*/
-	function get_link_mes(){
+	function get_link_mes($cur_page,$per_num){
 		$link = M('cms_link');
+		$total_num = $link->count();//计算文章总数
+		$page_html = pager($total_num,$cur_page,$per_num);//返回分页HTML代码
+		$limit = ($cur_page-1)*$per_num	;// 设置limit第一个参数参数,前边已经显示了多少数据 
+
 		$order=(" link_update_time DESC ");
-		$re =  $re = $link->order($order)->select();
-		if($re){
-			return $re;
+		$info = $link->order($order)->limit($limit,$per_num)->select();
+		
+		if(empty($info) ){
+			return false;
 		}
-		return false;
+
+		// 数据归一
+		$return['page_html'] = $page_html;
+		$return['info'] = $info;
+		return $return;
 	}
 
 	/* 查询链接表,返回一维数组，特定的链接信息*/
@@ -743,6 +739,106 @@
 			return false;
 		}
 	}
+
+
+
+/*------------------------------------------------------------------------------*/
+/*---------------------------以下为【分页函数】操作-----------------------------*/
+/*------------------------------------------------------------------------------*/
+	
+	/**
+	*	分页显示
+	*	@param 
+	*	$table_name 查询的表格名称
+	*	$per 每页要显示的条数
+	*	$sql 查询的SQL语句，纯语句
+	*	@return 返回三维数组
+	*	$arr=("info"=>"查询的全部数据","pagelist"=>"页码的HTML代码")，
+	*/
+	// function page($table_name,$per,$sql){
+	// 	$table = M("$table_name");
+	// 	/*1.赋值配置*/
+	// 	$total = $table->count();//计算总条数 【TP和自己写的SQL模版，count不知是否效果一样？】
+
+
+	// 	/*2.实例化分页类*/
+	// 	// $page = new \Component\Page($total,$per);//TP框架下用法：实例化分页类，分页类中相应要有命名空间
+	// 	include_once(__ROOT__.'common/Page.class.php');//把分页类加载进来，与上边二选一
+
+	// 	$page = new Page($total,$per);
+
+	// 	///* 3.写SQL语句*/
+	// 	$sql .= " ".$page->limit;//设置了每页限制
+
+	// 	 /*4.获得页码列表*/
+
+	// 	 // $info = $goods ->query($sql);//TP框架下的查询用法
+	// 	$info = $table ->select($sql);//自定义的函数select用法，与上边二选一
+
+	// 	$pagelist = $page->fpage();//获得分页信息
+
+	// 	/*5.返回信息*/
+	// 	$arr["info"]=$info;
+	// 	$arr["pagelist"]=$pagelist;
+	// 	return $arr;
+	// }
+
+
+
+	/**
+	*	分页通用模版，调用次函数即可
+	*  <--	此函数简单通用模版，当增加功能，需要约束各种数据条件时，重写即可   -->
+	*	@param 
+	* 		$cur_page 当前为第几页
+	* 		$per_num 每页条数
+	*		$table_name 查询那个表
+	*	@return
+	*	成功返回 链接表的信息, 三维数组
+	*		$return['page_html'] :为分类的HTML代码
+	*		$return['info'] :数据的信息，二维数组，下标为分类的ID，值为所搜索的对应字段，
+	*	失败返回false
+	*/
+	function page($cur_page,$per_num,$table_name){
+		$table = M($table_name);
+		$total_num = $table->count();//计算数据总数
+		$page_html = pager($total_num,$cur_page,$per_num);//返回分页HTML代码
+		$limit = ($cur_page-1)*$per_num	;// 设置limit第一个参数参数,前边已经显示了多少数据 
+		$info = $table->limit($limit,$per_num)->select();
+		if(empty($info) ){
+			return false;
+		}
+		// 数据归一
+		$return['page_html'] = $page_html;
+		$return['info'] = $info;
+		return $return;
+	}
+
+
+
+
+	/**
+	*	生成分页代码 ，与pager.class.php合用
+	*	@param 
+	*	$total_num 	  设置总数据量
+	*	$get_page     当前为第几页,默认第一页
+	*	$per_page_num 每页显示条数
+	*	@return 
+	*	$pageStr  根据数据编辑好的分页HTML代码
+	*/
+	function pager($total_num,$CurrentPage,$per_page_num){
+		// echo __ROOT__.'/common/pager.class.php';exit;
+		include_once(__ROOT__.'/common/pager.class.php');
+/*		把该CSS加入到项目的CSS/base.css文件
+		echo "<style>";
+		include_once(__ROOT__.'/common/pager.css');
+		echo "</style>";*/
+		$myPage=new pager($total_num,intval($CurrentPage),$per_page_num);     //总页数，当前页数，每页数量
+		// 获得并输出分页HTML
+		$pageStr= $myPage->GetPagerContent();   	//获得分页代码
+		return $pageStr;   							//输出分页的HTML代码
+	}
+
+
 
 
 /*------------------------------------------------------------------------------*/

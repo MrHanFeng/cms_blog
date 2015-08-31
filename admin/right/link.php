@@ -2,7 +2,15 @@
   include_once "../function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
 
-  $link_info = get_link_mes();
+
+  // 定义默认查看第一页
+  if(!isset($_GET['page'])){
+    $_GET['page']=1;
+  }
+  $link_arr = get_link_mes(@$_GET['page'],5);
+  $link_arr = page(@$_GET['page'],5,"cms_link");
+  $link_info =$link_arr['info'];//通用分页,但满足不了不加排序条件
+  $page =$link_arr['page_html'];
   // show($link_info);
 
 // 列表置顶功能
@@ -31,6 +39,7 @@
     <title>链接页面</title>
     <meta http-equiv="content-type" content="texl/html;charset=utf-8" >
     <link rel="stylesheet" href="../css/article.css">
+    <link rel="stylesheet" href="../css/pager.css">
 
   </head>
   <body>
@@ -76,6 +85,7 @@
 
 
       </table>
+      <?php echo $page; ?>
     </div>
   </body>
 </html>

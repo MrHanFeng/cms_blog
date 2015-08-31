@@ -1,6 +1,9 @@
 <?php 
   include_once "function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
+
+  $mg_info=get_manager($_SESSION['mg_id']);
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML><HEAD>
@@ -24,9 +27,9 @@
       <TABLE height=100 cellSpacing=0 cellPadding=0 width="100%" border=0>
         
         <TR>
-          <TD>当前时间：2008-12-27 17:03:55</TD></TR>
+          <TD>当前时间：<?php  echo date("Y-m-d H:i:s",time())?></TD></TR>
         <TR>
-          <TD style="FONT-WEIGHT: bold; FONT-SIZE: 16px">admin</TD></TR>
+          <TD style="FONT-WEIGHT: bold; FONT-SIZE: 16px"><?php echo $mg_info['mg_username'] ?></TD></TR>
         <TR>
           <TD>欢迎进入网站管理中心！</TD></TR></TABLE></TD></TR>
   <TR>
@@ -35,8 +38,8 @@
   <TR height=20>
     <TD></TD></TR>
   <TR height=22>
-    <TD style="PADDING-LEFT: 20px; FONT-WEIGHT: bold; COLOR: #ffffff" 
-    align=middle background=images/title_bg2.jpg>您的相关信息</TD></TR>
+    <TD style="PADDING-LEFT: 20px; FONT-WEIGHT: bold; COLOR: #ffffff; " 
+    align=middle background=images/title_bg2.jpg><font color=black>您的相关信息</font></TD></TR>
   <TR bgColor=#ecf4fc height=12>
     <TD></TD></TR>
   <TR height=20>
@@ -47,23 +50,24 @@
     <TD style="COLOR: #880000">admin</TD></TR>
   <TR>
     <TD align=right>真实姓名：</TD>
-    <TD style="COLOR: #880000">admin</TD></TR>
+    <TD style="COLOR: #880000"><?php echo $mg_info['mg_username'] ?></TD></TR>
   <TR>
     <TD align=right>注册时间：</TD>
-    <TD style="COLOR: #880000">2007-7-25 15:02:04</TD></TR>
+    <TD style="COLOR: #880000"><?php echo date("Y-m-d H:i:s",$mg_info['mg_time']); ?></TD></TR>
   <TR>
     <TD align=right>登陆次数：</TD>
-    <TD style="COLOR: #880000">58</TD></TR>
+    <TD style="COLOR: #880000"><?php echo $mg_info['mg_num'] ?></TD></TR>
   <TR>
     <TD align=right>上线时间：</TD>
-    <TD style="COLOR: #880000">2008-12-27 17:02:54</TD></TR>
+    <TD style="COLOR: #880000"><?php echo date("Y-m-d H:i:s") ?></TD></TR>
   <TR>
-    <TD align=right>IP地址：</TD>
-    <TD style="COLOR: #880000">222.240.172.117</TD></TR>
+    <TD align=right>本机IP地址：</TD>
+    <TD style="COLOR: #880000"><?php echo $_SERVER['REMOTE_ADDR']; ?></TD></TR>
   <TR>
-    <TD align=right>身份过期：</TD>
+    <TD align=right>有效登录时间：</TD>
     <TD style="COLOR: #880000">30 分钟</TD></TR>
   <TR>
-    <TD align=right>网站开发QQ：</TD>
-    <TD style="COLOR: #880000">215288671</TD></TR>
+    <TD align=right>当前浏览器信息:</TD>
+    <TD style="COLOR: #880000"><?php echo $_SERVER['HTTP_USER_AGENT']; ?></TD></TR>
+
   </TABLE></BODY></HTML>
