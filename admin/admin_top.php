@@ -40,13 +40,13 @@ function showsubmenu(sid) {
 <body leftmargin="0" topmargin="0">
 <table width="100%" height="64" border="0" cellpadding="0" cellspacing="0" class="admin_topbg">
   <tr>
-    <td width="61%" height="64"><img src="images/logo.gif" width="262" height="64"></td>
+    <td width="61%" height="64"><a href="<?php echo HOME_PATH ?>" title="点击返回前台首页" target="_blank "><img src="images/logo.gif" width="262" height="64"></a></td>
     <td width="39%" valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td width="74%" height="38" class="admin_txt">管理员：<b><?php echo @$_SESSION['username']; ?></b> 您好,感谢登陆使用！</td>
+        <td width="74%" height="38" class="admin_txt">管理员：<b><?php echo @$_SESSION['mg_name']; ?></b> 您好,感谢登陆使用！</td>
         <td width="22%">
           <a href= <?php PATH ?> "right/change_pwd.php" target="main">
-            <img src="images/change_pwd.gif" alt="修改密码" width="46" height="20" border="0">
+            <img src="images/editor.jpg" alt="修改密码" width="46" height="20" border="0">
           </a>
         </td>
         <td width="22%"><a href= <?php PATH ?> "admin_top.php?clear_s=1" target="_parent" onclick="return confirm('确定要退出？');"><img src="images/out.gif" alt="安全退出" width="46" height="20" border="0"></a></td>

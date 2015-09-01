@@ -3,16 +3,7 @@
 	define('__ROOT__',dirname(__DIR__));//物理路径
 	include_once(__ROOT__.'/config.php');//引入配置文件
 
-	// 实例化对象快捷函数
-	function M($table){
-		try{
-			$table=new MysqlClass($table);
-		}catch(Exception $e){
-			$e->getMessage();
-			exit();
-		}
-		return $table;
-	}
+
 
 	/**
 	*	设置'user_id''username'的SESSION值

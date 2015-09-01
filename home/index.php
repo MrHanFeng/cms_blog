@@ -7,28 +7,45 @@
 		if(isset($_GET['action']) && $_GET['action']='second' ){
 			$cate_id = $_GET['cat_id'];
 		}else{
-			$cate_id = '-1';
+			$cate_id = '-1';//默认查询全部
+		}
+
+		// 是否有查询文章，没有默认为0,数据查询不出查询此
+		if(@$_POST['search']){
+			$search_name = $_POST['search'];
+			$cate_id = '-1';//对分类重新赋值，让其还是查询全部
+		}else{
+			$search_name = 0;
+		}
+
+		//将header.php中查处的分类的二维数组变为，以分类ID为KEY的二维数组 【用于点击分页是的多出的DIV】
+		$cate_arr=array();
+		foreach ($cate_info as $key => $value) {
+			$cate_arr[$value['cat_id']]=$value;
 		}
 
 
-		// 查询文章,分类，评论信息，用于文章列表[分页]
+		/*最后的-->查询文章,分类，评论信息，用于文章列表[分页]*/
 		if(!isset($_GET['page'])){
 			$_GET['page'] = '1';
 		}
-		$arr = get_article_cate(@$_GET['page'],6,$cate_id);
+		$arr = get_article_cate(@$_GET['page'],6,$cate_id,$search_name);
 		$ar_ca_info = $arr['info'];
 		$page = $arr['page_html'];
 		// show($ar_ca_info);
 
-		// 查询评论条数
+		// 查询评论条数，
 		$comment_num = get_com_num();
+
 
 		// 查询评论，文章,用户信息，用于最新留言
 		$cm_ar_info = get_cm_art_user(5);
 		// show($cm_ar_info);		
 
+
 		// 随机获取文章
 		$rand_article = get_rand_ar(10);
+
 
 		// 统计文章数量
 		$ar_num = count_article_num();
@@ -39,11 +56,6 @@
 		// 上次更新时间
 		$last_update = get_last_update_time();
 
-		//将分类的二维数组变为已分类ID为KEY的二维数组 
-		$cate_arr=array();
-		foreach ($cate_info as $key => $value) {
-			$cate_arr[$value['cat_id']]=$value;
-		}
 
 
 
@@ -56,7 +68,7 @@
 		</div>
 
 	<!--如果是次级分类的主页面-->
-	<?php if (isset($_GET['action']) && $_GET['action']="second") : ?>
+	<?php if (isset($_GET['action']) &&  $cate_id !='-1'  ) {?>
 		
 		<div id="loading-bar"><div style="width: 100%; display: none;"></div></div>
 		<div class="page-head">
@@ -66,10 +78,17 @@
 					<div class="archive-meta">
 						<p><?php echo $cate_arr[$_GET['cat_id']]['cat_content'] ?></p>
 					</div>		
-	</div>
-	<?php endif ?>
+		</div>
 
+	<?php }elseif(isset($_POST['search'])){ ?> 
 
+		<div id="loading-bar"><div style="width: 100%; display: none;"></div></div>
+		<div class="page-head">
+			<h2 class="page-title">
+								关于 <span><font color=#81BD00><?php echo $_POST['search']; ?></font></span> 的搜索结果							</h2>
+			<div class="stripe-line"></div>
+		</div>
+	<?php } ?>
 
 		<!--中左侧-->
 		<div class="content" style="border-right-width: 1px; border-right-style: solid; border-right-color: rgb(221, 221, 221);">
@@ -100,14 +119,14 @@
 					</p>
 					<div class="post-thumbnail">
 						<a target="_blank" href="<?php  echo HOME_PATH."detail.php?article_id=$v[article_id]" ?>" title="显示“快速访问” 的固定链接" rel="bookmark">
-							<img width="300" height="300" src="./js/win10-quick-access-01-300x300.png" class="attachment-thumbnail wp-post-image" alt="win10-quick-access-01" original="http://www.ipeld.net/wp-content/uploads/2015/08/win10-quick-access-01-300x300.png">				
+							<img width="300" height="300" src="./images/article.jpg" class="attachment-thumbnail wp-post-image" alt="win10-quick-access-01" original="http://www.ipeld.net/wp-content/uploads/2015/08/win10-quick-access-01-300x300.png">				
 							<span class="overlay-icon"></span>
 						</a>
 					</div><!-- post-thumbnail /-->
 					<div class="entry">
 						<p>
 							<?php echo mb_substr( strip_tags($v['article_content']) ,0,160,"UTF8" )?>		
-							<a target="_blank" class="more-link" href="">阅读全文 »</a>
+							<a target="_blank" class="more-link" href="<?php echo HOME_PATH."detail.php?article_id=$v[article_id]" ?>">阅读全文 »</a>
 						</p>
 					</div>
 					<div class="clear"></div>
@@ -154,7 +173,7 @@
 									<span class="erch_date"><?php echo date("Y-m-d H:i:s",$vv['cm_time']) ?></span>
 								</div>
 								<div class="erc_body">
-									<a class="ercb_content" href="<?php echo HOME_PATH."detail.php?article_id=$vv[article_id]#comment-$vv[cm_id]" ?>" target="_blank"><?php echo $vv['cm_content'] ?></a>
+									<a class="ercb_content" href="<?php echo HOME_PATH."detail.php?article_id=$vv[article_id]#comment-$vv[cm_id]" ?>" target="_blank"><?php   echo mb_substr( strip_tags($vv['cm_content']) ,0,40,"UTF8" )     ?></a>
 								</div>
 							</li>
 							<?php } ?>
@@ -202,7 +221,7 @@
 						<ul id="efanyh_randomposts">
 							<?php foreach ($rand_article as $col => $row) {?>
 							<li>
-								<a href="<?php echo $row['article_id'] ?>" title="查看文章《<?php echo $row['article_title'] ?>》" target="_blank"><?php echo $row['article_title'] ?></a>
+								<a href="<?php echo HOME_PATH."detail.php?article_id=$v[article_id]" ?>" title="查看文章《<?php echo $row['article_title'] ?>》" target="_blank"><?php echo $row['article_title'] ?></a>
 							</li>
 							<?php } ?>
 
