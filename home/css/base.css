@@ -1,0 +1,125 @@
+	::-webkit-scrollbar {width: 8px; height:8px; }
+	#main-nav,.cat-box-content,#sidebar .widget-container,.post-listing {border-bottom-color: #81bd00;}
+	.search-block .search-button,
+	#topcontrol,
+	#main-nav ul li.current-menu-item a,
+	#main-nav ul li.current-menu-item a:hover,
+	#main-nav ul li.current-menu-parent a,
+	#main-nav ul li.current-menu-parent a:hover,
+	#main-nav ul li.current-page-ancestor a,
+	#main-nav ul li.current-page-ancestor a:hover,
+	.pagination span.current,
+	.share-post span.share-text,
+	.flex-control-paging li a.flex-active,
+	.ei-slider-thumbs li.ei-slider-element,
+	.review-percentage .review-item span span,.review-final-score ,
+	.woocommerce span.onsale, .woocommerce-page span.onsale ,
+	.woocommerce .widget_price_filter .ui-slider .ui-slider-handle, .woocommerce-page .widget_price_filter .ui-slider .ui-slider-handle  {
+		background-color:#81bd00 !important;
+	}
+	::-webkit-scrollbar-thumb{background-color:#81bd00 !important;}
+	footer#theme-footer, .top-nav, .top-nav ul li.current-menu-item:after,#main-nav ul li.mega-menu .mega-menu-block, #main-nav ul ul {border-top-color: #81bd00;}
+	.search-block:after {border-right-color:#81bd00;}
+	#main-nav ul > li.parent-list:hover > a:after{border-color:transparent transparent #81bd00;}
+
+	body{
+		background-image: url('../images/background.png') !important; 
+		background-attachment:fixed !important; 
+		}
+		/* 调整头部 Logo 的间距 */
+		.theme-header .logo {
+		margin-bottom: -15px;
+		}
+
+		/*  头部广告 */
+		.ads-top img {
+		width: auto;
+		height: 89px;
+		}
+
+		/* 文章图片添加外边框 */
+		.post-inner .entry img {
+		border: 1px solid #EEE;
+		}
+
+		/* 顶部导航 */
+		#menu-item-7575 {
+		border-left: 1px solid #ececec;
+		border-right: 1px solid #ececec;
+		}
+		#menu-item-8248 {
+		border-right: 1px solid #ececec;
+		}
+
+		/* 优化文章列表项内部的引用样式 */
+		.post-inner .entry li blockquote {
+		margin-top: 15px;
+		margin-right: 40px;
+		}
+
+		/* 底部友情链接 */
+		ul.xoxo.blogroll {
+		border: none !important;
+		}
+		ul.xoxo.blogroll li {
+		float: left;
+		border: none !important;
+		width: 130px;
+		}
+
+		/* Crayon */
+		.crayon-syntax .crayon-table td.crayon-nums {
+		display: none !important;
+		}
+		.crayon-syntax .crayon-table td.crayon-code {
+		padding: 10px 15px !important;
+		border-left: 10px solid #DEDEDE !important;
+		}
+
+		/* Link Style */
+		.post-inner .entry p a, 
+		.post-inner .entry ul a, 
+		.post-inner .entry ol a {
+			padding: 0 !important;
+			transition: none !important;
+		}
+		.post-inner .entry p a:hover,
+		.post-inner .entry ul a:hover,
+		.post-inner .entry ol a:hover {
+			text-decoration: none !important;
+			border-bottom: 1px solid #81bd00 !important;
+		}
+		.post-inner .entry p a[class*="image"] {
+			border: none !important;
+		}
+
+		.entry ul ul, .entry ol ol, .entry ul ol, .entry ol ul {
+		    font-size: 1em;
+		}
+		.entry ul ul li {
+		    list-style-type: circle;
+		}
+
+		.entry .help-info {
+		    border-bottom: 1px dotted;
+		    margin: 0 5px;
+		    cursor: help;
+		}
+		@media only screen and (max-width: 985px) and (min-width: 768px){
+		.ads-top {
+		display: none;
+		}
+		}
+		@media only screen and (max-width: 767px) and (min-width: 480px){
+		.ads-top {
+		display: none;
+		}
+		}
+		@media only screen and (max-width: 479px) and (min-width: 320px){
+			.logo img {
+			height: auto;
+			}
+			.ads-top {
+			display: none;
+			}
+		}

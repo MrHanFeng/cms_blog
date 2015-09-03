@@ -1,0 +1,556 @@
+/**************************************************
+ ******		    通用 CSS 样式				 ******
+ **************************************************/
+ 
+/* 全局字体 */
+body, 
+.post-title, 
+.page-title, 
+.entry h1, .entry h2, .entry h3, .entry h4, .entry h5, .entry h6, 
+.widget-top h4,
+#respond #submit,
+#comments-title,
+#respond #reply-title,
+#respond textarea#comment,
+#respond input#author, #respond input#email, #respond input#url,
+.theme-header .search-block input#s,
+#footer-widget-area .footer-widget-top h4,
+.breaking-news span {
+	font-family: 'Microsoft Yahei','微软雅黑',Arial,Verdana,sans-serif;
+}
+
+/* 文章信息: 通用样式 */
+p.post-meta {
+	font-size: 1.05em;
+}
+
+/* 文章正文：通用样式 */
+.entry p {
+	font-size: 1.2em;
+	line-height: 1.75;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+/* 文章正文页以及页面不显示侧边栏 */
+body.single aside#sidebar,
+body.page aside#sidebar {
+	display: none;
+}
+body.single .content,
+body.page .content {
+	width: 100%;
+}
+
+/* 列表样式：通用样式 */
+.entry ol, .entry ul {
+	margin: 1em 0 2em 2em;
+	font-size: 1.2em;
+}
+.entry li {
+	margin: 0 0 7px 10px;
+	line-height: 1.75;
+}
+
+/* 小标题 h3：通用样式 */
+.entry h3 {
+	font-size: 2em;
+	color: #81bd00;
+	font-weight: normal;
+}
+
+/* 各类标题：通用样式 */
+.entry h1, .entry h2, .entry h3, .entry h4, .entry h5, .entry h6 {
+	margin-top: 60px;
+	margin-bottom: 30px;
+}
+
+/* 文章标签：Post-Tags */
+.post-tag {
+	margin: -25px 20px 40px 20px;
+	font-size: 1.1em;
+	padding: 10px 10px 0px;
+	border-top: 1px dashed #DDD;
+}
+.post-tag a {
+	font-size: 1em;
+	text-transform: capitalize;
+	font-weight: normal;
+	padding: 5px 12px;
+	margin-left: 2px;
+	margin-bottom: 5px;
+}
+.post-tag a:first-child {
+	margin-left: 4px;
+}
+
+/* 文章导航：上一篇、下一篇 */
+.post-navigation {
+	padding: 0px 25px;
+}
+.post-navigation div {
+	font-size: 1.1em;
+}
+.post-navigation div span {
+	font-size: 0.9em;
+}
+.post-navigation div a:hover {
+	color: #81bd00;
+}
+
+/* 评论列表：通用样式 */
+#comments {
+	padding: 0px 25px 15px;
+}
+.commentlist cite.fn {
+	font-style: normal;
+	font-size: 1.5em;
+	padding-top: 2px;
+}
+.commentmetadata {
+	font-size: 1em;
+}
+.commentmetadata a, .commentmetadata a:hover {
+	color: #aaa;
+}
+.comment-content p {
+	line-height: 1.75;
+	font-size: 1.1em;
+	margin-left: 29px;
+}
+#comments #comments-title {
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+
+/* 评论待审核提示 */
+.comment-awaiting-moderation {
+	padding-left: 29px;
+	color: red;
+	font-size: 1.1em;
+	line-height: 30px;
+}
+
+/* 评论框：通用样式 */
+#respond #reply-title {
+	margin-top: 20px;
+	font-weight: bold;
+}
+#respond .logged-in-as {
+	font-size: 1.1em;
+	margin-bottom: 15px;
+	margin-top: 15px;
+}
+#respond .logged-in-as a:last-child:hover {
+	color: #81bd00;
+}
+#respond textarea#comment {
+	font-size: 1.1em;
+	line-height: 1.75em;
+	height: 134px;
+}
+#respond p.comment-notes,
+#respond p.comment-form-author,
+#respond p.comment-form-email,
+#respond p.comment-form-url {
+	font-size: 1.1em;
+}
+#respond p.comment-form-author input,
+#respond p.comment-form-email input,
+#respond p.comment-form-url input {
+	margin-top: 5px;
+}
+#respond p.comment-notes {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+/* 详情页链接统一样式 */
+.post-inner .entry p a, 
+.post-inner .entry ul a, 
+.post-inner .entry ol a {
+	color: #81bd00;
+}
+.post-inner .entry p a:hover,
+.post-inner .entry ul a:hover,
+.post-inner .entry ol a:hover {
+	text-decoration: underline;
+}
+
+/* 页面布局 */
+#main-content {
+	padding: 0px;
+	width: 1045px;
+}
+body.home .content,
+body.archive .content,
+body.search .content {
+	padding: 5px 10px;
+	width: 714px;
+	padding-right: 0px;
+}
+body.single .content article.post-listing,
+body.page .content article.post-listing {
+	padding: 5px 12px;
+}
+.content .post-listing {
+	box-shadow: none;
+	border: none;
+}
+
+/* Breaking News */
+.breaking-news {
+	height: 36px;
+	margin: -10px auto -10px;
+}
+.breaking-news span {
+	background: #81bd00;
+	padding: 8px 10px;
+	font-size: 1.15em;
+}
+.breaking-news ul a {
+	font-size: 1.1em;
+	padding: 8px 10px 10px;
+}
+
+ 
+
+ 
+/**************************************************
+ ******		    文章列表样式				 ******
+ **************************************************/
+ 
+/* 文章标题 */
+.post-listing .item-list .post-box-title {
+	font-weight: bold;
+	font-size: 1.6em;
+}
+.post-listing .item-list .post-box-title a:hover {
+	color: #81bd00;
+	text-decoration: underline;
+}
+
+/* 文章正文：文章列表专用样式 */
+.post-listing .item-list .entry p {
+	padding: 0px;
+}
+
+/* 文章信息：文章列表专用样式 */
+.post-listing .item-list p.post-meta {
+	margin: 0.6em 0em 1.1em;
+	padding-bottom: 1em;
+	border-bottom: 1px dashed #DDD;
+}
+
+/* 文章缩略图 */
+@media only screen and (min-width: 480px) {
+	.item-list .post-thumbnail {
+		width: 150px;
+		height: 150px;
+	}
+}
+
+/* 存档页大标题样式优化 */
+.page-head .stripe-line {
+	margin-top: 13px;
+	display: none;
+}
+a.rss-cat-icon {
+	margin-top: 15px;
+	float: left;
+}
+.archive-meta {
+	padding: 2px 0;
+}
+.page-head {
+	padding: 15px 30px;
+	border-bottom: 1px solid #DDD;
+	margin-bottom: 10px;
+	margin-top: -2px;
+	background-color: #eee;
+	box-shadow: inset 0 0 2px white, 0 0 5px #CACACA;
+	
+}
+.page-head .page-title {
+	text-transform: capitalize;
+	font-size: 32px;
+	
+	
+}
+
+/* 文章摘要：从通用样式中特殊化 */
+.post-listing .item-list .entry p {
+	font-size: 1.15em;
+}
+
+/* 阅读全文 */
+a.more-link {
+	color: #81bd00;
+	font-weight: normal;
+	display: inline-block;
+}
+a.more-link:hover {
+	text-decoration: underline;
+}
+
+/* 分页 */
+.pagination {
+	padding: 0px 15px;
+}
+
+
+/**************************************************
+ ******		   		 侧边栏样式				 ******
+ **************************************************/
+ 
+#sidebar {
+	padding-top: 15px;
+	padding-right: 10px;
+}
+#sidebar .widget {
+	margin-bottom: 15px;
+}
+#sidebar .widget .widget-top {
+	height: 27px;
+	padding-bottom: 7px;
+	border-bottom: 1px dotted #DDD;
+}
+#sidebar .widget .widget-top .stripe-line {
+	margin-top: 7px;
+	display: none;
+}
+#sidebar .widget .widget-top h4 {
+	margin-left: 13px;
+}
+#sidebar .widget .widget-container {
+	box-shadow: none;
+	border: none;
+	padding-left: 15px;
+}
+#sidebar .widget .widget-container li {
+	line-height: 1.6;
+	font-size: 1.1em;
+	background: none;
+	padding-left: 0px;
+}
+
+
+
+
+/**************************************************
+ ******		    文章正文页样式				 ******
+ **************************************************/
+ 
+/* 文章标题：正文页专用样式 */
+.post-inner h1.post-title {
+	font-weight: bold;
+}
+
+/* 文章信息：正文页专用样式 */
+.post-inner p.post-meta {
+	margin-top: 10px;
+	padding-bottom: 12px;
+}
+
+/* 引用 */
+.post-inner .entry blockquote {
+	background: #f7f7f7;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-right: 40px;
+	font-style: normal;
+}
+
+
+
+/**************************************************
+ ******		   		404页面样式				 ******
+ **************************************************/
+
+/* 404 标题 */
+body.error404 .post-inner .post-title {
+	font-size: 50px;
+	font-weight: bold;
+}
+
+/* 404 说明文字 */
+body.error404 .post-inner .entry p {
+	font-size: 17px;
+	padding-top: 5px;
+}
+
+
+
+/**************************************************
+ ******		   		特殊功能模块			 ******
+ **************************************************/
+ 
+/* 浮动快速工具栏 */
+#float-toolbar {
+	position: fixed;
+	top: 55px;
+	right: -48px;
+	z-index: 40;
+	padding-left: 20px;
+	padding-bottom: 15px;
+	-webkit-transition: all .4s ease-in-out;
+	-moz-transition: all .4s ease-in-out;
+	-o-transition: all .4s ease-in-out;
+	-ms-transition: all .4s ease-in-out;
+	transition: all .4s ease-in-out;
+	opacity: 0;
+}
+#float-toolbar:hover {
+	right:0px;
+	opacity: 1;
+}
+#float-toolbar div a span {
+	cursor: default;
+	padding: 5px 10px;
+	background: white;
+	color: black;
+	border-left: 5px solid #81BD00;
+	line-height: 27px;
+}
+#float-toolbar div a span:hover {
+	background: #81BD00;
+	color: white;
+}
+@media only screen and ( max-width: 1024px ) {
+	/* 只在电脑上显示浮动工具栏 */
+	#float-toolbar { display: none; }
+}
+
+/* 页面加载进度条 */
+#loading-bar {
+	height: 2px;
+	margin: 0 auto;
+	position: relative;
+}
+#loading-bar div {
+	width: 0;
+	height: 3px;
+	background: #81bd00;
+}
+
+
+
+/**************************************************
+ ******		   	适应不同屏幕尺寸			 ******
+ **************************************************/
+ 
+@media only screen and (max-width: 1024px) {
+	#main-content {
+		width: 985px !important;
+	}
+	body.home .content,
+	body.archive .content,
+	body.search .content	{
+		width: 654px !important;
+	}
+}
+
+@media only screen and (max-width: 985px) and (min-width: 768px) {
+	/* 整体布局调整 */
+	#main-content {
+		width: 760px !important;
+	}
+	body.home .content,
+	body.archive .content,
+	body.search .content {
+		padding: 0px !important;
+		border: none !important;
+		width: 100% !important;
+	}
+	body.single .content,
+	body.page .content {
+		width: 100% !important;
+	}
+	#sidebar {
+		width: 100% !important;
+		padding: 0px !important;
+	}
+	
+	/* 根据屏幕尺寸适当显隐元素 */
+	.footer-widget .footer-widget-top h4, .footer-widget .footer-widget-container {
+		text-align: center;
+	}
+	.footer-bottom .container {
+		width: 700px !important;
+	}
+}
+
+@media only screen and (max-width: 767px) and (min-width: 480px) {
+	/* 整体布局调整 */
+	header#theme-header, 
+	#main-content, 
+	#footer-widget-area {
+		width: 98% !important;
+	}
+	.container,
+	#main-nav {
+		width: 100% !important;
+	}
+	body.home .content,
+	body.archive .content,
+	body.search .content {
+		width: 100% !important;
+		padding: 0px !important;
+	}
+	body.single .content,
+	body.page .content {
+		width: 100% !important;
+	}
+	
+	/* 根据屏幕尺寸适当显隐元素 */
+	.pagination a.first, .pagination a.last, .pagination span.extend {
+		display: none;
+	}
+	#sidebar {
+		width: 100% !important;
+		padding: 0px !important;
+	}
+	.footer-widget .footer-widget-top h4, .footer-widget .footer-widget-container {
+		text-align: center;
+	}
+}
+
+@media only screen and (max-width: 479px) {
+	
+	/* 整体布局调整 */
+	header#theme-header, 
+	#main-content, 
+	#main-nav, 
+	#footer-widget-area {
+		width: 100% !important;
+	}
+	body.home .content,
+	body.archive .content,
+	body.search .content {
+		width: 100% !important;
+		padding: 0px !important;
+	}
+	body.single .content,
+	body.page .content {
+		width: 100% !important;
+	}
+	
+	/* 根据屏幕尺寸适当显隐元素 */
+	#sidebar {
+		display: none;
+	}
+	.pagination a.page, .pagination a.first, .pagination a.last, .pagination span.extend, .pagination span.current {
+		display: none;
+	}
+	#tie-next-page a:before {
+		content: '下一页 ';
+	}
+	.footer-widget .footer-widget-top h4, .footer-widget .footer-widget-container {
+		text-align: center;
+	}
+	.footer-bottom .alignleft {
+		display: none;
+	}
+}

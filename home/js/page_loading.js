@@ -1,0 +1,1 @@
+jQuery(document).ready(function(){jQuery("#loading-bar div").animate({width:"100%"},1000,function(){setTimeout(function(){jQuery("#loading-bar div").fadeOut(500);});});});
