@@ -13,8 +13,8 @@
 	define('MAIL_FROM', '@163.com');
 	define('MAIL_FROMNAME', 'MR.峰');
 	define('MAIL_PASSWORD','');
-	define('MAIL_CHARSET','utf-8');//谌哥，看我多信任你。
-	define('MAIL_ISHTML',true);//谌哥，看我多信任你。
+	define('MAIL_CHARSET','utf-8');//
+	define('MAIL_ISHTML',true);//
 
 
 

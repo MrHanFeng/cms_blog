@@ -453,6 +453,16 @@
 	function insert_link($data){
 		$data['link_update_time'] = time();
 		$link = M('cms_link');
+		// show($data);
+		// show($_FILES);
+		// 加载上传类
+		$url = upload('link_img');
+		if($url === false){
+			return false;
+		}
+		$data['link_img'] = strstr($url,"upload");
+
+
 		$re = $link->data($data)->insert();
 		// echo $link->getLastSql();exit;
 		// show($re);
@@ -535,6 +545,23 @@
 	*	@return 成功返回影响行数 ；失败返回false
 	*/
 	function update_link($id,$data){
+		$link_info = get_link($id);//查询出此友情链接的信息
+        //判断有无删除图片操作
+        if(@$data['del_pic']){
+           unlink(__ROOT__.'/public/'.$link_info['link_img']);
+           unset($data['del_pic']);
+           $data['link_img'] = " ";
+        }
+        if(!empty($_FILES['link_img']['name'])){
+       		@unlink(__ROOT__."/public/".$link_info['link_img']);//先删除原来文件exit;
+       		$url = upload('link_img');//移动文件
+			if($url === false){
+				return false;
+			}
+			$data['link_img'] = strstr($url,"upload");//赋新地址值
+        }
+
+
 		$link = M('cms_link');
 		$where = " link_id = $id ";
 
@@ -542,8 +569,9 @@
 			$data=array();
 			$data['link_update_time']=time();
 		}
+
 		$re = $link->where($where)->data($data)->update();
-		// echo $link->getLastSql();
+		
 
 		if($re){
 			return true;
@@ -679,6 +707,25 @@
 /*------------------------------------------------------------------------------*/
 /*---------------------------以下为【文件上传】操作-----------------------------*/
 /*------------------------------------------------------------------------------*/
+	/**
+	*	文件上传函数，把文件保存到指定路径
+	*	@param 
+	*		$filename:表单里写的文件名称
+	*	@return 成功返回图片存储物理路径，失败返回false
+	*/
+	function upload($filename){
+		include_once(__ROOT__.'/common/Upload.class.php');//引入类文件
+		$path  = __ROOT__."/public/upload/".date("Y-m-d",time());//定义路径
+		$upload = new upload($filename,$path);
+		$url  = $upload->uploadFile();//调用成员方法，成功返回保存的物理地址
+		if(empty($url)){
+			return false;
+		}
+		return $url;
+	}
+
+
+
 
 	/**
 	*	获取文件后缀名字

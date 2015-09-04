@@ -65,7 +65,7 @@
       		<td><?php echo $v['link_name'] ?></td>
       		<td><?php echo $v['link_introduce'] ?></td>
       		<td><?php echo $v['link_url'] ?></td>
-      		<td><img src="<?php  $v['link_img']?>" alt="链接图片" width=150 height=100></td>
+      		<td><img src="<?php  echo __PUBLIC__."/".$v['link_img']?>" alt="链接图片" width=150 height=100></td>
 
       		<td>
       			<a href=""><a href=" <?php echo PATH."link.php?action=up&link_id=".$v['link_id'] ?> ">置顶</a></a><br><br>

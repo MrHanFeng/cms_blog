@@ -9,11 +9,12 @@
 
   if($_POST){
      if(@$_GET['action']=="editor" &&  $_GET['link_id']){//如果是修改页面，执行更行操作，否则执行插入操作
+
         $re = update_link($_GET['link_id'],$_POST);
         $word="修改";
      }else{
       $re = insert_link($_POST);
-      $word="删除";
+      $word="添加";
      }
      if($re){
          jump(2,PATH."link.php",$word."成功","success");
@@ -61,6 +62,17 @@
             <input type="text" name="link_url" value="<?php if( isset($_GET['link_id']) ){ echo $link_info['link_url'] ;}?>">
           </td>
         </tr>
+
+        <?php if( isset($_GET['link_id']) ){  ?>
+        <tr>
+          <td>图片预览</td>          
+          <td>
+            <img src="<?php  echo __PUBLIC__."/". $link_info['link_img']?>" alt="链接图片" width=150 height=100>
+            删除<input type="checkbox" name="del_pic" value="1">
+          </td>
+        </tr>
+        <?php  } ?>
+
         <tr>
           <td>链接图片</td>
           <td>
