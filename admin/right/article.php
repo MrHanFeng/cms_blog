@@ -2,6 +2,7 @@
 <?php 
   include_once "../function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
+  check_auth($_SESSION['mg_id'],'article');
 
   // 检测在哪个页面，回收站和文章列表
   if(isset($_GET['sign'])){

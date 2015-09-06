@@ -392,20 +392,8 @@
 	}
 
 
-	/**
-	*	获取管理员的信息
-	*	@param  $id 管理员的ID号
-	*	@return 一位数组 该管理员的信息 失败返回false
-	*/
-	function get_manager($id){
-		$where= (" mg_id = $id ");
-		$mg = M("cms_manager");
-		$re = $mg->where($where)->find();
-		if($re){
-			return $re;
-		}
-		return false;
-	}
+
+
 
 /*------------------------------------------------------------------------------*/
 /*-------------------------------以下为【插入】操作-----------------------------*/
@@ -877,6 +865,255 @@
 	}
 
 
+
+
+/*------------------------------------------------------------------------------------------------------*/
+/*---------------------------以下为【权限管理】操作-----------------------------------------------------*/
+/*------------------------------------------------------------------------------------------------------*/
+
+/**
+*	权限管理
+*	@param 
+*	$id  管理员ID
+*	$page 这个页面的名字
+*	@return 
+*		有这个权限，返回true
+*		没有权限，返回false
+*/
+	function check_auth($id,$page){
+		$info = M('cms_manager');
+		$role_id = $info->field('mg_role_id')->where("mg_id = $id")->find();
+		$info = M('cms_role');
+		$role_info = $info->field('role_auth_ac')->where("role_id = $role_id[mg_role_id]")->find();
+		if(is_array($role_info['role_auth_ac'])){
+			$str = implode(",",$role_info['role_auth_ac']);
+		}
+		$str = $role_info['role_auth_ac'];
+		if(strpos($str,$page)){
+			return true;
+		}
+        jump(2,ADMIN_PATH."index.php","没有权限","error");
+	}
+
+/*------------------------------------manager表---------------------------------------------------*/
+
+	/**
+	*	查询所有管理员信息
+	*	@return 二维数组 成功返回所有管理员信息 失败返回false
+	*/
+	function get_manager_mes(){
+		$mg = M("cms_manager");
+		$re = $mg->select();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+	/**
+	*	获取管理员的信息
+	*	@param  $id 管理员的ID号
+	*	@return 一位数组 该管理员的信息 失败返回false
+	*/
+	function get_manager($id){
+		$where= (" mg_id = $id ");
+		$mg = M("cms_manager");
+		$re = $mg->where($where)->find();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+
+	/**
+	*	增加管理员
+	*	@param 数组，各种数据
+	*	@return 成功返回true 失败返回false
+	*/	
+	function insert_manager($data){
+
+		$info = M('cms_manager');
+		$data['mg_time']=time();
+		$data['mg_pwd']=md6($data['mg_pwd']);
+		$re = $info->data($data)->insert();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+	/**
+	*	修改管理员信息
+	*	@param mg_id post
+	*	@return 成功返回treu 失败返回false
+	*/
+	function update_manager($id,$data){
+		$info = M('cms_manager');
+		$data['mg_time']=time();
+		$data['mg_pwd']=md6($data['mg_pwd']);
+		$re = $info->data($data)->where("mg_id = $id")->update();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+	/**
+	*	删除管理员
+	*	@param mg_id
+	*	@return 成功ture 失败false
+	*/
+	function del_manager($id){
+		$info =M('cms_manager');
+		$re = $info->where("mg_id=$id")->delete();
+		if($re){
+			return true;
+		}
+		return false;
+	}
+
+
+/*-----------------------------------------role表---------------------------------------------*/
+
+
+	/**
+	*	查询所有角色信息
+	*	@return 二维数组，
+	*		成功：返回所有角色信息
+	*		失败：返回false
+	*/	
+	function get_role(){
+		$info = M('cms_role');
+		$re = $info->select();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+	/**
+	*	返回特定角色信息
+	*	@param $id role_id
+	*	@return 一维数组，成功返回该角色权限ID，失败返回false
+	*/
+	function find_role($id){
+		$info=M('cms_role');
+		$re = $info->where("role_id=$id")->field('role_auth_ids')->find();
+		$ids = explode(",",$re['role_auth_ids']);
+		if($ids){
+			return $ids;
+		}
+		return false;
+	}
+
+	/**
+	*	添加角色
+	*	@param $role_name
+	*	@return 成功返回true 失败返回false
+	*/
+	function add_role($role_name){
+		$info =M('cms_role');
+		$data['role_name']=$role_name;
+		$re = $info->data($data)->insert();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+	/**
+	*	修改角色权限
+	*	@param
+	*		$role_id
+	*		$arr_auth_id 为权限ID，一维数组形式
+	*	@return
+	*		成功 true
+	*		失败 false
+	*/
+	function update_role($role_id,$arr_auth_id){
+		$info = M('cms_role');
+
+		/*分别获取每个auth_id对应的文件名字，便于后边限制权限*/
+		$auth_a="";
+		$auth = M('cms_auth');
+		foreach ($arr_auth_id as  $value) {
+			$re = $auth->where("auth_id = $value")->field("auth_a")->find();
+			if(!empty($re['auth_a'])){
+			  $auth_a .="$re[auth_a],";
+			}
+		}
+		$auth_a =substr($auth_a, 0,-1);//以,为分割，存储页面名字
+
+		$ids=implode(',', $arr_auth_id);//以,为分割，存储权限ID
+
+		$data=array(
+				"role_auth_ids"=>$ids,
+				"role_auth_ac"=>$auth_a
+			);
+		$re = $info->data($data)->where("role_id=$role_id")->update();
+		if($re){
+			return true;
+		}
+		return false;
+
+	}
+
+
+	/**
+	*	删除角色
+	*	@param $id role_id
+	*	@return
+	*		成功返回true
+	*		失败返回false
+	*/
+	function del_role($id){
+		$info=M('cms_role');
+		$re= $info->where("role_id=$id")->delete();
+		if($re){
+			return true;
+		}
+		return false;
+	}
+
+/*------------------------------------auth表--------------------------------------------------*/
+
+	/**
+	*	获取全部权限
+	*	@return 二维数组
+	*		
+	*/
+	function get_auth(){
+		$info = M('cms_auth');
+
+		$parent =$info ->where('auth_level=0')->select();
+		$child =$info ->where('auth_level=1')->select();
+		$re['parent']=$parent;
+		$re['child']=$child;
+		if($re){
+			return $re;
+		}
+		return false;
+	}
+
+
+
+
+	/**
+	*	添加权限
+	*
+	*/	
+	function add_auth(){
+
+	}
+	function update_auth(){
+
+	}
+
+
+
+
+
+/*----------------------------------------------------------------------------------------------*/
 
 
 /*------------------------------------------------------------------------------*/
