@@ -2,6 +2,7 @@
   include_once "../function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
 
+
   $value = get_category($_GET['cat_id']);
   if(isset($_POST['cat_id']) && !empty($_POST['cat_name']) ){
     // show($_POST);exit;

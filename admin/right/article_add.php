@@ -1,6 +1,7 @@
 <?php 
   include_once "../function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
+  check_auth($_SESSION['mg_id'],'article_add');
   $cate_info = get_category_mes();
 
 // 判断是否提交文章

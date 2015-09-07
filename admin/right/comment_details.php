@@ -3,6 +3,7 @@
   include_once "../function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
 
+
   $comm_info = get_comment($_GET['cm_arid']);
   // show($comm_info);exit;
 

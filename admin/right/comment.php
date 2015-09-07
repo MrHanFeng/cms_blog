@@ -2,6 +2,8 @@
 <?php 
   include_once "../function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
+check_auth($_SESSION['mg_id'],'comment');
+
 
   // 检测在那个页面，回收站和文章列表
   $order = " article_create_time DESC ";

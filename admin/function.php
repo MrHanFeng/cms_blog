@@ -889,10 +889,39 @@
 			$str = implode(",",$role_info['role_auth_ac']);
 		}
 		$str = $role_info['role_auth_ac'];
-		if(strpos($str,$page)){
+		$allow_html = array('admin_left','admin_right','admin_top','admin_index');
+		if(strpos($str,$page)!==false || $_SESSION['mg_id']=='1'|| in_array($str,$allow_html)  ){
 			return true;
 		}
-        jump(2,ADMIN_PATH."index.php","没有权限","error");
+		jump(2,ADMIN_PATH."index.php","没有权限","error");
+	}
+
+
+
+	/**
+	*	查询list操作列表
+	*	@return 三维数组
+	*		$arr['p_list']  包含所有顶级列表的二维数组
+	*		$arr['c_list']  包含所有二级列表的二维数组
+	*		上述两个组合成一个三维数组返回
+	*/
+	function get_list(){
+		$mg = M('cms_manager');
+		$role = M('cms_role');
+		$role_id = $mg->field("mg_role_id")->where("mg_id=$_SESSION[mg_id] ")->find();
+		$auth_ids = $role->field("role_auth_ids")->where("role_id=$role_id[mg_role_id] ")->find();
+		$sql = "SELECT	auth_id,auth_name FROM	cms_auth  WHERE	 auth_level='0'";
+		if($_SESSION['mg_id'] !="1") $sql.= " and auth_id in ($auth_ids[role_auth_ids]) ";
+		$p_list = $mg->query($sql);
+		$sql = "SELECT	auth_id,auth_pid,auth_name,auth_a FROM	cms_auth  WHERE	 auth_level='1'";
+		if($_SESSION['mg_id'] !="1") $sql.= " and auth_id in ($auth_ids[role_auth_ids]) ";
+		$c_list = $mg->query($sql);
+		$all_list=array(
+				"p_list"=>$p_list,
+				"c_list"=>$c_list,
+			);
+		// show($all_list);exit;
+		return $all_list;
 	}
 
 /*------------------------------------manager表---------------------------------------------------*/
@@ -1079,12 +1108,12 @@
 
 	/**
 	*	获取全部权限
-	*	@return 二维数组
-	*		
+	*	@return 三维数组
+	*		['parent'] 二维数组
+	*		['child'] 二维数组 组合成三位数组返回
 	*/
 	function get_auth(){
 		$info = M('cms_auth');
-
 		$parent =$info ->where('auth_level=0')->select();
 		$child =$info ->where('auth_level=1')->select();
 		$re['parent']=$parent;
@@ -1094,21 +1123,84 @@
 		}
 		return false;
 	}
+	// 和上边一样，不过返回所有信息的二维数组
+	function get_auth_two(){
+		$info = M('cms_auth');
+		$re =$info ->order(" auth_path ASC")->select();
+		foreach ($re as $k => $v) {
+			 $re[$k]['auth_name'] = str_repeat("&nbsp&nbsp", $v['auth_level']).$v['auth_name'];
+		}
+		if($re){
+			return $re;
+		}
+		return false;
+	}
 
-
+	/**
+	*	获取某个权限的信息
+	*	@param $auth_id
+	*	@return 一位数组，关于此权限的所有信息
+	*/
+	function get_auth_find($id){
+		$info = M('cms_auth');
+		$re =$info->where(" auth_id = $id")->find();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
 
 
 	/**
 	*	添加权限
-	*
+	*	
 	*/	
-	function add_auth(){
-
+	function insert_auth($data){
+		$info = M('cms_auth');
+		$ins_id =$info-> data($data)->insert();
+		if($data['auth_pid'] !=0){
+			 $arr['auth_path'] = $data['auth_pid']."-".$ins_id;
+		}else{
+			$arr['auth_path'] =$ins_id;
+		}
+		$arr['auth_level'] = substr_count($arr['auth_path'], "-");
+		$re =$info-> data($arr)->where("auth_id=$ins_id")->update();
+		if($re){
+			return true;
+		}
+		return false;
 	}
-	function update_auth(){
 
+	/**
+	*	更新权限
+	*	@return 陈功返回true 失败返回false
+	*/
+	function update_auth($id,$data){
+		$info =M('cms_auth');
+		if($data['auth_pid'] !=0){
+			 $data['auth_path'] = $data['auth_pid']."-".$id;
+		}else{
+			$data['auth_path'] =$id;
+		}
+		$data['auth_level'] = substr_count($data['auth_path'], "-");
+		$re =$info-> data($data)->where("auth_id=$id")->update();
+		if($re){
+			return true;
+		}
+		return false;
 	}
 
+	/**
+	*	删除某一权限，成功返回true 失败返回false
+	*/
+	function del_auth($id){
+		$info=M('cms_auth');
+		$re= $info->where("auth_id=$id")->delete();
+		if($re){
+			return true;
+		}
+		return false;
+	}
 
 
 

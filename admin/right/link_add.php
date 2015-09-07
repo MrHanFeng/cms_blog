@@ -1,6 +1,7 @@
 <?php 
   include_once "../function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
+  check_auth($_SESSION['mg_id'],'link_add');
 
 // 判断如果为修改页面，获取链接信息
   if(@$_GET['action']=="editor" &&  $_GET['link_id']){

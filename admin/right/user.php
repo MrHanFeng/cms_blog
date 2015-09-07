@@ -1,6 +1,7 @@
 <?php 
  	 include_once "../function.php";
  	 checkLogin();//检测是否登录，未登录，返回到login.php
+check_auth($_SESSION['mg_id'],'user');
 
    /*分页开始*/
    // 定义默认查看第一页
