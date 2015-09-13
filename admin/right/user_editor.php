@@ -14,11 +14,11 @@ check_auth($_SESSION['mg_id'],'user_editor');
   if(!empty($_POST)){
     // 修改用户信息页面
     if(isset($_GET['action']) && $_GET['action']="update" ){
-        if(strlen($_POST['password']) < 6 ){
-           jump(2,PATH."user.php","密码并不能小于6位","error");
-        }elseif($_POST['password'] !== $_POST['c_password']){
-           jump(2,PATH."user.php","两次密码不相同","error");
-        }
+//        if(strlen($_POST['password']) < 6 ){
+//           jump(2,PATH."user.php","密码并不能小于6位","error");
+//        }elseif($_POST['password'] !== $_POST['c_password']){
+//           jump(2,PATH."user.php","两次密码不相同","error");
+//        }
         unset($_POST['c_password']);
         $re = update_user($_GET['user_id'],$_POST);
         if($re){
@@ -27,11 +27,14 @@ check_auth($_SESSION['mg_id'],'user_editor');
           jump(2,PATH."user.php","修改失败","error");
         }
     }else{//添加用户页面
+//        $result_check = check_reg($_POST);//进行注册验证
+//        if($result_check['bool']){
         $result_check = check_reg($_POST);//进行注册验证
-        if($result_check['bool']){
+      if($result_check['bool']){
         if(array_key_exists("c_password", $_POST)){
           unset($_POST['c_password']);
         }
+
         $re_insert = insert_user($_POST);
         if($re_insert){
           jump(2,PATH."user.php","插入成功","success");
@@ -62,7 +65,7 @@ check_auth($_SESSION['mg_id'],'user_editor');
   <body>
     <div class="contain">
       <div class="title">当前位置：会员操作</div>
-      <form action="" method="post">
+      <form action="" method="post" enctype="multipart/form-data">
           <table class="first_table" border=2 cellpadding=2>
             <tr>
               <td>登录邮箱</td>
@@ -76,8 +79,13 @@ check_auth($_SESSION['mg_id'],'user_editor');
             </tr>            
             <tr>
               <td>用户名</td>
-              <td><input type="text" name="username" value="<?php if(isset($user_info)){ echo $user_info['username']; } ?>"></td>
-            </tr>          
+              <td>
+                  <input type="text" name="username" value="<?php if(isset($user_info)){ echo $user_info['username']; } ?>">
+                  <?php if(isset($_GET['action']) && $_GET['action']="update" ){ ?>
+                      <input type="hidden" value="<?php echo $_GET['user_id'];?>" name="user_id">
+                  <?php  } ?>
+              </td>
+            </tr>
             <tr>
               <td>密码</td>
               <td><input type="password" name="password"></td>
@@ -90,6 +98,21 @@ check_auth($_SESSION['mg_id'],'user_editor');
               <td>电话号</td>
               <td><input type="text" name="user_tel" value="<?php if(isset($user_info)){ echo $user_info['user_tel']; } ?>"></td>
             </tr>
+              <?php if( isset($_GET['user_id']) ){  ?>
+                  <tr>
+                      <td>图片预览</td>
+                      <td>
+                          <img src="<?php  echo __PUBLIC__."/". $user_info['user_img']?>" alt="链接图片" width=150 height=100>
+                          删除<input type="checkbox" name="del_pic" value="1">
+                      </td>
+                  </tr>
+              <?php  } ?>
+              <tr>
+                  <td>添加头像</td>
+                  <td>
+                      <input type="file" name="user_img">
+                  </td>
+              </tr>
             <tr>
               <td colspan=2>
                 <input type="submit" value="提交">

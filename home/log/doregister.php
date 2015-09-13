@@ -9,10 +9,10 @@
 /*邮件发送，配置定义*/
 	define('MAIL_HOST','smtp.163.com');
 	define('MAIL_SMTPAUTH', true);
-	define('MAIL_USERNAME', '@163.com');
-	define('MAIL_FROM', '@163.com');
-	define('MAIL_FROMNAME', 'MR.峰');
-	define('MAIL_PASSWORD','');
+	define('MAIL_USERNAME', '18335124662@163.com');
+	define('MAIL_FROM', '18335124662@163.com');
+	define('MAIL_FROMNAME', 'NUC_韩峰');
+	define('MAIL_PASSWORD','lfygdtmwnhtllhnk');
 	define('MAIL_CHARSET','utf-8');//
 	define('MAIL_ISHTML',true);//
 
@@ -32,19 +32,18 @@
             $re = $code_sql->where($where)->data($data)->update();
             // show($re);
             // echo $code_sql->getLastSql();exit;
-
-			$message=<<<str
-                        你好！$_POST[user_email]
-                        <h2>欢迎注册MR.峰网站</h2>
+			$message="
+                        你好！{$_POST['user_email']}
+                        <h2>欢迎注册NUC_韩峰网站</h2>
                         请点击如下地址激活帐号:<br/><br/>
-                        <a href="http://localhost/shixun/cms_blog/home/log/register_finish.php?user_email=$_POST[user_email]&code=$code">
-                        http://localhost/shixun/cms_blog/home/log/register_finish.php?user_email=$_POST[user_email]&code=$code</a>
+                        <a href= ".HOME_PATH."log/register_finish.php?user_email=$_POST[user_email]&code=$code>
+                        ".HOME_PATH."log/register_finish.php?user_email=$_POST[user_email]&code=$code</a>
                         <br/><br/>
-str;
+";
 		}
 
 		if(SendMail("$_POST[user_email]",'欢迎注册网站',"$message")){
-			echo '<script>alert("发送成功，请激活");</script>';
+			echo '<script>alert("发送成功，请激活");location="login.php"</script>';
 		}else{
 			echo '<script>alert("发送失败");location="register.php";</script>';
 		}

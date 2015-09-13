@@ -19,7 +19,13 @@
 		$result = $login->do_login();
 		// show($result);exit;
 		if($result["result"] ){
+
 			$login->login();
+
+			$info = M('cms_user');
+			$data['user_last'] = time();
+
+			$info->data($data)->where("user_id=$_SESSION[user_id] ")->update();
 			echo "<script>alert('登录成功');window.location.href='../index.php';</script>";
 		}else{
 			echo "<script>alert('".$result["error_info"]."');location='login.php';</script>";

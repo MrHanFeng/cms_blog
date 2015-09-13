@@ -6,12 +6,12 @@
 	/*邮件发送，配置定义*/
 		define('MAIL_HOST','smtp.163.com');
 		define('MAIL_SMTPAUTH', true);
-		define('MAIL_USERNAME', '@163.com');
-		define('MAIL_FROM', '@163.com');
-		define('MAIL_FROMNAME', 'MR.峰');
-		define('MAIL_PASSWORD','');
-		define('MAIL_CHARSET','utf-8');//谌哥，看我多信任你。
-		define('MAIL_ISHTML',true);//谌哥，看我多信任你。
+		define('MAIL_USERNAME', '18335124662@163.com');
+		define('MAIL_FROM', '18335124662@163.com');
+		define('MAIL_FROMNAME', 'NUC_韩峰');
+		define('MAIL_PASSWORD','lfygdtmwnhtllhnk');
+		define('MAIL_CHARSET','utf-8');//
+		define('MAIL_ISHTML',true);//
 
 	if(isset($_POST['user_email'])){
 		array_pop($_POST);
@@ -20,15 +20,17 @@
 		$field=" user_code,user_email ";
 		$re = $info->where($where)->field($field)->find();
 		// show($re);exit;
+        $h_path =HOME_PATH;
+
 		 if($re){
-                        $message=<<<str
+              $message="
                             你好！$_POST[user_email]
-                                <h2>欢迎使用MR.峰的网站</h2>
+                                <h2>欢迎使用NUC_韩峰的网站</h2>
                                 点击如下地址设置新密码:<br/><br/>
-                                <a href="http://localhost/shixun/cms_blog/home/log/setpwd.php?user_email=$re[user_email]&code=$re[user_code]">
-                                http://localhost/shixun/cms_blog/home/log/setpwd.php?user_email=$re[user_email]&code=$re[user_code]</a>
+                                <a href=".HOME_PATH."log/setpwd.php?user_email=$re[user_email]&code=$re[user_code]>
+                              ".HOME_PATH."log/setpwd.php?user_email=$re[user_email]&code=$re[user_code]</a>
                                 <br/><br/>
-str;
+";
 
 			if(SendMail("$_POST[user_email]",'找回密码',"$message")){
 				echo '<script>alert("发送成功，请查看");</script>';

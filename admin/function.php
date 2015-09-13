@@ -92,6 +92,7 @@
 				jump('2',ADMIN_PATH."log/login.php",'用户名不存在','error');
 			}elseif(md6($_POST['password']) == $user_info['mg_pwd']){
 				if(isset($_POST['remember'])){//记住密码功能
+
 					setcookie('username',$_POST['username'],time()+3600*24*7);
 					$password = md6($user_info['mg_name'].$user_info['mg_pwd']);
 					setcookie('password',$password,time()+3600*24*7);
@@ -185,6 +186,8 @@
 	*		失败$result['bool']=false + $result['info']错误信息
 	*/
 	function check_reg($data){
+		$arr['bool']= true;
+		return $arr;
 		$user = M('cms_user');
 		$where = array("user_email"=>$data['user_email']);
 		$re = $user->where($where)->find();
@@ -448,8 +451,7 @@
 		if($url === false){
 			return false;
 		}
-		$data['link_img'] = strstr($url,"upload");
-
+		$data['link_img'] = strstr($url,"upload");//截取字符串到upload文件夹,原字符串为全物理路径
 
 		$re = $link->data($data)->insert();
 		// echo $link->getLastSql();exit;
@@ -470,9 +472,12 @@
 		$data['user_last'] = time();
 		$data['password'] = md6($data['password']);
 		$user = M('cms_user');
+		$url = upload('user_img');//上传并返回路径
+		if($url === false){
+			return false;
+		}
+		echo $data['link_img'] = strstr($url,"upload");//截取字符串到upload文件夹,原字符串为全物理路径
 		$re = $user->data($data)->insert();
-		// echo $link->getLastSql();exit;
-		// show($re);
 		if($re){
 			return $re;
 		}
@@ -591,8 +596,25 @@
 	*	@return 成功返回影响行数 ；失败返回false
 	*/
 	function update_user($id,$data){
+		$info = get_user($id);//查询出此友情链接的信息
+		//判断有删除图片操作,清空图片地址
+		if(@$data['del_pic']){
+			unlink(__ROOT__.'/public/'.$info['user_img']);
+			unset($data['del_pic']);
+			$data['user_img'] = " ";
+		}
+		if(!empty($_FILES['user_img']['name'])){
+			@unlink(__ROOT__."/public/".$info['user_img']);//先删除原来文件exit;
+			$url = upload('user_img');//移动文件
+			if($url === false){
+				return false;
+			}
+			$data['user_img'] = strstr($url,"upload");//赋新地址值
+		}
+
+
 		$user = M('cms_user');
-		$data['user_last'] = time();
+
 		$data['password'] = md6($data['password'] );
 		$where = " user_id = $id ";
 		$re = $user->where($where)->data($data)->update();

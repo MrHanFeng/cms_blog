@@ -1,11 +1,6 @@
 <?php 
 	include_once('header.php');
 	
-	// 获得特定文章所有信息
-	$article = get_article($_GET['article_id']);
-
-	// 获得该文章评论信息
-	$comment = get_comment($_GET['article_id']);
 
 	if(@$_POST['submit']){
 		array_pop($_POST);
@@ -17,6 +12,13 @@
 			echo "<script>alert('插入失败')</script>";
 		}
 	}
+	
+	// 获得特定文章所有信息
+	$article = get_article($_GET['article_id']);
+
+	// 获得该文章评论信息
+	$comment = get_comment($_GET['article_id']);
+
  ?>
 
 
@@ -83,8 +85,14 @@
 				<li id="comment-<?php echo $vc['cm_id'] ?>">
 					<div class="comment even thread-even depth-1 comment-wrap">
 						<div class="comment-avatar">
-							<img alt="" src="images/user.png" class="avatar avatar-45 photo" height="45" width="45" style="display: inline;">
-						</div>
+							<?php if(isset($vc['cm_user_id'])){
+								$user_info = get_user($vc['cm_user_id']);
+							?>
+							<img alt=""  src="<?php  echo __PUBLIC__."/". $user_info['user_img']?>" class="avatar avatar-45 photo" height="45" width="45" style="display: inline;">
+							<?php  }else{ ?>
+								<img alt="" src="images/user.png" class="avatar avatar-45 photo" height="45" width="45" style="display: inline;">
+							<?php  } ?>
+					</div>
 						<div class="author-comment">
 							<cite class="fn"><a href="<?php echo $vc['cm_url'] ?>" rel="external nofollow" class="url" target="_blank" title="进入<?php echo $vc['cm_nickname'] ?>的网站 <?php echo $vc['cm_url'] ?>"><?php echo $vc['cm_nickname'] ?></a></cite>				
 							<div class="comment-meta commentmetadata">	<?php echo date("Y年m月d日 H时i分s秒",$vc['cm_time']) ?></div><!-- .comment-meta .commentmetadata -->

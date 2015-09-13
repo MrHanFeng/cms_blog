@@ -43,24 +43,34 @@ check_auth($_SESSION['mg_id'],'user');
       <table class="first_table" border=1 cellpadding=6 cellspacing=3 >
       	<tr>
       		<td width=5%>ID号</td>
+			<td width="10%"> 会员头像</td>
       		<td width=20%>登录帐号</td>
       		<td width=11%>用户名</td>
       		<td width=12%>电话</td>
       		<td width=15%>注册时间</td>
       		<td width=15%>上次登陆时间</td>
-      		<td>操作</td>
+      		<td>修改</td>
+      		<td>删除</td>
       	</tr>
 <?php foreach ($user_info as $k => $v) {?>
       	<tr>
       		<td> <?php echo $v['user_id'] ?></td>
-      		<td> <?php echo $v['user_email'] ?></td>
+			<td>
+				<img src="<?php   echo __PUBLIC__."/".$v['user_img'] ?>" alt="" width="150px" height="100px">
+			</td>      		<td> <?php echo $v['user_email'] ?></td>
       		<td> <?php echo $v['username'] ?></td>
       		<td> <?php echo $v['user_tel'] ?></td>
       		<td> <?php echo date("Y-m-d H:i:s",$v['user_time']) ?></td>
       		<td> <?php echo date("Y-m-d H:i:s",$v['user_last']) ?></td>
       		<td>
-      			<a href="<?php echo PATH."user_editor.php?action=editor&user_id=$v[user_id]" ?>">修改</a>
-      			<a href="<?php echo PATH."user.php?action=del&user_id=$v[user_id]" ?>">删除</a>
+      			<a href="<?php echo PATH."user_editor.php?action=editor&user_id=$v[user_id]" ?>">
+					<img src="../images/edit.png" alt="修改">
+				</a>
+			</td>
+			<td>
+      			<a href="<?php echo PATH."user.php?action=del&user_id=$v[user_id]" ?>">
+					<img src="../images/del.png" alt="删除">
+				</a>
       		</td>
       	</tr>
 <?php  }?>

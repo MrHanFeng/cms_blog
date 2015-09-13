@@ -175,6 +175,16 @@
 		}
 	}
 
+	/* 查询特定会员,返回一维数组 所有信息*/
+	function get_user($id){
+		$user = M('cms_user');
+		$where=" user_id = $id";
+		$re = $re = $user->where($where)->find();
+		if($re){
+			return $re;
+		}
+		return false;
+	}
 
 	/**
 	*	统计文章数量，与更新时间
