@@ -19,6 +19,8 @@
 	// 获得该文章评论信息
 	$comment = get_comment($_GET['article_id']);
 
+	// 更新阅读次数
+	update_num($_GET['article_id']);
  ?>
 
 
@@ -69,8 +71,8 @@
 
 
 		<div class="post-navigation">
-			<div class="post-previous"><a href="http://www.ipeld.net/archives/53.html" rel="prev"><span>上一篇：</span> 有哪些提高效率的习惯？</a></div>
-			<div class="post-next"><a href="http://www.ipeld.net/archives/7117.html" rel="next"><span>下一篇：</span> 实用的 Chrome 扩展程序整理与推荐</a></div>
+			<div class="post-previous"><a href="" rel="prev"><span>上一篇：</span> 有哪些提高效率的习惯？</a></div>
+			<div class="post-next"><a href="" rel="next"><span>下一篇：</span> 实用的 Chrome 扩展程序整理与推荐</a></div>
 		</div><!-- .post-navigation -->
 		
 
@@ -85,7 +87,7 @@
 				<li id="comment-<?php echo $vc['cm_id'] ?>">
 					<div class="comment even thread-even depth-1 comment-wrap">
 						<div class="comment-avatar">
-							<?php if(isset($vc['cm_user_id'])){
+							<?php if(isset($vc['cm_user_id']) ){
 								$user_info = get_user($vc['cm_user_id']);
 							?>
 							<img alt=""  src="<?php  echo __PUBLIC__."/". $user_info['user_img']?>" class="avatar avatar-45 photo" height="45" width="45" style="display: inline;">

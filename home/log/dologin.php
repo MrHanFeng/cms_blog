@@ -7,7 +7,7 @@
 
 	/*引入类*/
 	$path = dirname(dirname(__DIR__));//获取根路径
-	include($path.'/common/MySql.class.php');
+	include($path.'/common/Mysql.class.php');
 	include($path.'/common/Login.class.php');
 
 
@@ -19,9 +19,7 @@
 		$result = $login->do_login();
 		// show($result);exit;
 		if($result["result"] ){
-
 			$login->login();
-
 			$info = M('cms_user');
 			$data['user_last'] = time();
 
@@ -32,6 +30,14 @@
 		}
 	}
 
-
+	if(isset($_GET['flag']) && $_GET['flag']=="logout"){
+		$login = new Login();
+		$re=$login->loginout();
+		if($re){
+			echo "<script>alert('注销成功');window.location.href='../index.php';</script>";
+		}else{
+			echo "<script>alert('注销失败');window.location.href='../index.php';</script>";
+		}
+	}
 
 ?>

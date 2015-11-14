@@ -112,12 +112,21 @@
 		<div class="top-nav">
 			<div class="top-menu">
 				<ul id="menu-%e9%a1%b6%e9%83%a8%e5%af%bc%e8%88%aa" class="menu">
+				<?php if(empty($_SESSION['user_id'])){ ?>
 					<li id="menu-item-3325" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3325">
-						<a href=" about" target="_blank">关于我</a>
+						<a href="<?php echo HOME_PATH."log/login.php" ?>" target="_blank">登录</a>
 					</li>
 					<li id="menu-item-3324" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3324">
-						<a href=" guestbook" target="_blank">留言本</a>
+						<a href="<?php echo HOME_PATH."log/register.php" ?>" target="_blank">注册</a>
 					</li>
+				<?php }else{ ?>
+					<li id="menu-item-3325" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3325">
+						<a href="" target="_blank"><?php echo $_SESSION['user_email'] ?></a>
+					</li>
+					<li id="menu-item-3324" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3324">
+						<a href="<?php echo HOME_PATH."log/dologin.php?flag=logout" ?>" >退出</a>
+					</li>
+				<?php } ?>
 					<li id="menu-item-8608" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-8608">
 						<a href="" target="_blank">订阅本站</a>
 					</li>

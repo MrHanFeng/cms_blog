@@ -124,9 +124,7 @@
 			// echo show($result);
 			// exit;
 			if(!$result){
-				echo "<script>alert('cookie不存在,');</script>";
-				header("location:".ADMIN_PATH."/log/login.php");
-				exit;
+				jump('2',ADMIN_PATH."log/login.php",'请登录','success');
 			}
 		}
 	}
@@ -143,7 +141,7 @@
 	 */
 	function loginByCookie(){
 		if(!isset($_COOKIE['username'])){
-			echo "无COOKI";
+			// echo "无COOKI";
 			return false;
 		}
 		$user_table= M('cms_manager');
@@ -540,7 +538,10 @@
 	function update_link($id,$data){
 		$link_info = get_link($id);//查询出此友情链接的信息
         //判断有无删除图片操作
-        if(@$data['del_pic']){
+        // echo $data;
+        // echo $data['del_pic'];
+        // show(@$data['del_pic']);exit;
+        if(is_array($data) && @$data['del_pic']){
            unlink(__ROOT__.'/public/'.$link_info['link_img']);
            unset($data['del_pic']);
            $data['link_img'] = " ";
@@ -557,14 +558,12 @@
 
 		$link = M('cms_link');
 		$where = " link_id = $id ";
-
 		if(!is_array($data) && $data="up" ){//如果是置顶操作
 			$data=array();
 			$data['link_update_time']=time();
 		}
-
-		$re = $link->where($where)->data($data)->update();
 		
+		$re = $link->where($where)->data($data)->update();
 
 		if($re){
 			return true;
@@ -599,9 +598,9 @@
 		$info = get_user($id);//查询出此友情链接的信息
 		//判断有删除图片操作,清空图片地址
 		if(@$data['del_pic']){
-			unlink(__ROOT__.'/public/'.$info['user_img']);
+			@unlink(__ROOT__.'/public/'.$info['user_img']);
 			unset($data['del_pic']);
-			$data['user_img'] = " ";
+			$data['user_img'] = "";
 		}
 		if(!empty($_FILES['user_img']['name'])){
 			@unlink(__ROOT__."/public/".$info['user_img']);//先删除原来文件exit;
@@ -611,14 +610,15 @@
 			}
 			$data['user_img'] = strstr($url,"upload");//赋新地址值
 		}
-
+		// show($_FILES);
+		// show($_POST);exit;
 
 		$user = M('cms_user');
 
 		$data['password'] = md6($data['password'] );
 		$where = " user_id = $id ";
 		$re = $user->where($where)->data($data)->update();
-		// echo $link->getLastSql();exit;
+		// echo $user->getLastSql();exit;
 		if($re){
 			return true;
 		}
@@ -926,15 +926,20 @@
 	*		$arr['p_list']  包含所有顶级列表的二维数组
 	*		$arr['c_list']  包含所有二级列表的二维数组
 	*		上述两个组合成一个三维数组返回
+	*	默认超级管理员的ID为1
 	*/
 	function get_list(){
 		$mg = M('cms_manager');
 		$role = M('cms_role');
 		$role_id = $mg->field("mg_role_id")->where("mg_id=$_SESSION[mg_id] ")->find();
 		$auth_ids = $role->field("role_auth_ids")->where("role_id=$role_id[mg_role_id] ")->find();
+		// echo $role->getLastSql();
+		// show($auth_ids);
 		$sql = "SELECT	auth_id,auth_name FROM	cms_auth  WHERE	 auth_level='0'";
+		// echo $_SESSION['mg_id'];
 		if($_SESSION['mg_id'] !="1") $sql.= " and auth_id in ($auth_ids[role_auth_ids]) ";
 		$p_list = $mg->query($sql);
+		// echo $mg->getLastSql();
 		$sql = "SELECT	auth_id,auth_pid,auth_name,auth_a FROM	cms_auth  WHERE	 auth_level='1'";
 		if($_SESSION['mg_id'] !="1") $sql.= " and auth_id in ($auth_ids[role_auth_ids]) ";
 		$c_list = $mg->query($sql);
@@ -945,6 +950,7 @@
 		// show($all_list);exit;
 		return $all_list;
 	}
+
 
 /*------------------------------------manager表---------------------------------------------------*/
 

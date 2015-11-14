@@ -45,7 +45,7 @@ function showsubmenu(sid) {
       <tr>
         <td width="74%" height="38" class="admin_txt">管理员：<b><?php echo @$_SESSION['mg_name']; ?></b> 您好,感谢登陆使用！</td>
         <td width="22%">
-          <a href= <?php PATH ?> "right/change_pwd.php" target="main">
+          <a href= <?php PATH ?> "view/change_pwd.php" target="main">
             <img src="images/editor.jpg" alt="修改密码" width="46" height="20" border="0">
           </a>
         </td>

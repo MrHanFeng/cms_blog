@@ -85,7 +85,7 @@
 		$temp_y = $this->height*3/4;
 		for($i = 0;$i < $this->str_num ;$i++){
 			$code_color = imagecolorallocate($this->img, 0,0,0);
-			imagettftext($this->img, $this->font_size, rand(-30,30), $temp_x * $i + 10, $temp_y, $code_color, "simhei.ttf", $this->checknum[$i]);	
+			imagettftext($this->img, $this->font_size, rand(-30,30), $temp_x * $i + 10, $temp_y, $code_color, "t1.ttf", $this->checknum[$i]);	
 		}
 
 	}

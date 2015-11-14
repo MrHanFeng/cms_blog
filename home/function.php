@@ -311,7 +311,22 @@
 		return false;
 	}
 
-
+	/*------------------------------------------------------------------------------*/
+	/*-----------------------------以下为【更新操作】操作---------------------------*/
+	/*------------------------------------------------------------------------------*/
+	/**
+	*	更新阅览次数
+	*
+	*/
+	function update_num($id){
+		$info=M('cms_article');
+		$where="article_id = $id";
+		$data['article_read_num']="article_read_num +1";
+		$sql = "UPDATE `cms_article` SET `article_read_num` = `article_read_num`+1 WHERE (`article_id` = $id);";
+		// $info->where($where)->data($data)->update();
+		$info->query_one($sql);
+		// echo $info->getLastSql();exit;
+	}
 
 
 	/*------------------------------------------------------------------------------*/

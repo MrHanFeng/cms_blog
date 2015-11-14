@@ -2,6 +2,7 @@
   include_once "function.php";
   checkLogin();//检测是否登录，未登录，返回到login.php
   $all_list = get_list();
+  // show($all_list);
   $p_list=$all_list['p_list'];
   $c_list=$all_list['c_list'];
   // show($p_list);
@@ -39,7 +40,7 @@
         <ul class="MM">
           <?php foreach ($c_list as $vv): ?>
           <?php if($vv['auth_pid'] ==$v['auth_id']){ ?>
-            <li><a href="right/<?php echo $vv['auth_a'] ?>.php" target="main"><?php echo $vv['auth_name'] ?></a></li>
+            <li><a href="view/<?php echo $vv['auth_a'] ?>.php" target="main"><?php echo $vv['auth_name'] ?></a></li>
           <?php } ?>
           <?php endforeach ?>
         </ul>

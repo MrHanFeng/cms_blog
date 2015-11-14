@@ -1,7 +1,5 @@
-
-	<?php 
+<?php 
 		include_once('header.php');
-		
 
 		// 如果点击了分类栏,输入该分类ID，查询文章
 		if(isset($_GET['action']) && $_GET['action']='second' ){

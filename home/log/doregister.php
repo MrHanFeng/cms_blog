@@ -2,7 +2,7 @@
 	header("Content-type:text/html;charset=utf-8");
 	session_start();
 	$path = dirname(dirname(__DIR__));//获取gen路径
-	include($path.'/common/MySql.class.php');
+	include($path.'/common/Mysql.class.php');
 	include($path.'/common/Register.class.php');
     include($path.'/common/PHPMailer/PHPMailerAutoload.php');
 
